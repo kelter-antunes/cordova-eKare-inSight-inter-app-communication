@@ -66,9 +66,9 @@ NSString *const PREFIX_ERROR = @"ERR: ";
     NSDictionary *clearDict = @{@"hash": @"43934s341049fjls348434", @"data": @"data value"};
 
     // Convert the NSDictionary object to NSData object
-    //NSData *measurementsClearData = [NSData dataWithContentsOfFile:[NSBundle.mainBundle pathForResource:@"interapp" ofType:@"dat"]];
+    NSData *measurementsClearData = [NSData dataWithContentsOfFile:[NSBundle.mainBundle pathForResource:@"interapp" ofType:@"dat"]];
 
-    NSData *measurementsClearData = [NSKeyedArchiver archivedDataWithRootObject:clearDict];
+    //NSData *measurementsClearData = [NSKeyedArchiver archivedDataWithRootObject:clearDict];
 
     // Encryption password
     NSString *password = kInterAppPW;
@@ -91,9 +91,6 @@ NSString *const PREFIX_ERROR = @"ERR: ";
 
 
 
-
-
-
     // Prepare the NSURL that will open inSight app
     NSURL *url = [NSURL URLWithString:urlString];
 
@@ -104,17 +101,6 @@ NSString *const PREFIX_ERROR = @"ERR: ";
         NSLog(@"success : %d", success);
        
     }];
-
-
-
-  //BOOL result = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-  //if (!result) {
-  //  CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unable to open URL"];
-  //  [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-  //  return;
- // }
-
-
 
 
     }
