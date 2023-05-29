@@ -90,11 +90,32 @@ NSString *const PREFIX_ERROR = @"ERR: ";
     NSString *urlString = [NSString stringWithFormat:@"%@://%@?%@", scheme, appId, params];
 
 
+
+
+
+
     // Prepare the NSURL that will open inSight app
     NSURL *url = [NSURL URLWithString:urlString];
 
     NSString *nsURLString = url.absoluteString;
     result = nsURLString;
+
+    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:^(BOOL success) {
+        NSLog(@"success : %d", success);
+       
+    }];
+
+
+
+  //BOOL result = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+  //if (!result) {
+  //  CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unable to open URL"];
+  //  [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+  //  return;
+ // }
+
+
+
 
     }
 	else
