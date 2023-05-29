@@ -20,6 +20,22 @@
         <param name="ios-package" value="eKareinSightInterApp" onload="true" />
       </feature>
     </config-file>
+
+    <config-file target="*-Info.plist" parent="CFBundleURLTypes">
+      <array>
+        <dict>
+          <key>CFBundleTypeRole</key>
+            <string>None</string>
+          <key>CFBundleURLName</key>
+            <string>com.ekareinc.insight.interappdemo</string>
+          <key>CFBundleURLSchemes</key>
+          <array>
+            <string>measure-demo</string>
+          </array>
+        </dict>
+      </array>
+    </config-file>
+
     <framework src="Foundation.framework" />
     <framework src="Security.framework" />
     <source-file src="src/ios/eKareinSightInterApp.m"/>
