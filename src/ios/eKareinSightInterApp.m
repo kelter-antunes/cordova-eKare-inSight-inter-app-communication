@@ -79,6 +79,7 @@ NSString *const PREFIX_ERROR = @"ERR: ";
     // Convert encrypted data to NSString
     NSString *measurementsEncryptedString = [measurementsEncryptedData base64EncodedStringWithOptions:0];
 
+
     // Prepare the parameters to be passed in the URL
     NSString *params = [NSString stringWithFormat:@"data=%@", measurementsEncryptedString];
 
