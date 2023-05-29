@@ -94,7 +94,7 @@ NSString *const PREFIX_ERROR = @"ERR: ";
     NSURL *url = [NSURL URLWithString:urlString];
 
     NSString *nsURLString = url.absoluteString;
-    result = [nsURLString];
+    result = nsURLString;
 
     }
 	else
