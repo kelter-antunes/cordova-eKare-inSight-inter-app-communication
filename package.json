@@ -1,0 +1,29 @@
+{
+  "name": "cordova-ekare-insight-inter-app-communication",
+  "version": "1.0.0",
+  "description": "cordova-ekare-insight-inter-app-communication",
+  "cordova": {
+    "id": "cordova-ekare-insight-inter-app-communication",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kelter-antunes/cordova-eKare-inSight-inter-app-communication.git"
+  },
+  "keywords": [
+    "cordova",
+    "eKare",
+    "inSight",
+    "inter-app",
+    "ecosystem:cordova",
+    "cordova-ios"
+  ],
+  "author": "Miguel 'Kelter' Antunes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kelter-antunes/cordova-eKare-inSight-inter-app-communication/issues"
+  },
+  "homepage": "https://github.com/kelter-antunes/cordova-eKare-inSight-inter-app-communication#readme"
+}

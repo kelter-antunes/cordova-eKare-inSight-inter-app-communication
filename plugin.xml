@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-file-rncryptor" version="1.1.0">
+  <name>cordova-ekare-insight-inter-app-communication</name>
+  <description>cordova-ekare-insight-inter-app-communication</description>
+  <license>MIT</license>
+  <keywords>cordova,eKare,inSight,inter-app</keywords>
+  <repo>https://github.com/kelter-antunes/cordova-eKare-inSight-inter-app-communication</repo>
+  <issue>https://github.com/kelter-antunes/cordova-eKare-inSight-inter-app-communication/issues</issue>
+  <engines>
+    <engine name="cordova-android" version=">=6.3.0" />
+  </engines>
+  <js-module src="www/eKareinSightInterApp.js" name="eKareinSightInterApp" >
+    <merges target="eKareinSightInterApp"/>
+  </js-module>
+
+  <!-- iOS -->
+  <platform name="ios">
+    <config-file parent="/*" target="config.xml">
+      <feature name="eKareinSightInterApp">
+        <param name="ios-package" value="eKareinSightInterApp" onload="true" />
+      </feature>
+    </config-file>
+    <framework src="Foundation.framework" />
+    <framework src="Security.framework" />
+    <source-file src="src/ios/eKareinSightInterApp.m"/>
+    <header-file src="src/ios/eKareinSightInterApp.h"/>
+    <header-file src="src/ios/RNCryptor/RNCryptor+Private.h" />
+    <header-file src="src/ios/RNCryptor/RNCryptor-Prefix.pch" />
+    <header-file src="src/ios/RNCryptor/RNCryptor.h" />
+    <source-file src="src/ios/RNCryptor/RNCryptor.m" />
+    <header-file src="src/ios/RNCryptor/RNCryptorEngine.h" />
+    <source-file src="src/ios/RNCryptor/RNCryptorEngine.m" />
+    <header-file src="src/ios/RNCryptor/RNDecryptor.h" />
+    <source-file src="src/ios/RNCryptor/RNDecryptor.m" />
+    <header-file src="src/ios/RNCryptor/RNEncryptor.h" />
+    <source-file src="src/ios/RNCryptor/RNEncryptor.m" />
+  </platform>
+</plugin>
