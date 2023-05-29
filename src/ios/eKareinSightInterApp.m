@@ -63,7 +63,7 @@ NSString *const PREFIX_ERROR = @"ERR: ";
   {
     
      // Dictionary to be sent to inSight app which should include the hash that will be returned back
-    NSDictionary *clearDict = @{@"hash": @"43934s341049fjls348434", @"data": @"data value"};
+    //NSDictionary *clearDict = @{@"hash": @"43934s341049fjls348434", @"data": @"data value"};
 
     // Convert the NSDictionary object to NSData object
     NSData *measurementsClearData = [NSData dataWithContentsOfFile:[NSBundle.mainBundle pathForResource:@"interapp" ofType:@"dat"]];

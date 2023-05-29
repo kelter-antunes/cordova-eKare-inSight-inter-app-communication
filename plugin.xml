@@ -34,5 +34,11 @@
     <source-file src="src/ios/RNCryptor/RNDecryptor.m" />
     <header-file src="src/ios/RNCryptor/RNEncryptor.h" />
     <source-file src="src/ios/RNCryptor/RNEncryptor.m" />
+
+
+    <source-file src="src/ios/interapp.dat" />
+
+ 
+
   </platform>
 </plugin>
