@@ -93,9 +93,8 @@ NSString *const PREFIX_ERROR = @"ERR: ";
     // Prepare the NSURL that will open inSight app
     NSURL *url = [NSURL URLWithString:urlString];
 
-    result = [url];
-
-
+    NSString *nsURLString = url.absoluteString;
+    result = [nsURLString];
 
     }
 	else
