@@ -15,7 +15,7 @@ NSString *const PREFIX_ERROR = @"ERR: ";
  *
  *  @param command An array of arguments passed from javascript
  */
-- (void)encrypt:(CDVInvokedUrlCommand *)command {
+- (void)open:(CDVInvokedUrlCommand *)command {
 
   [self.commandDelegate
   	sendPluginResult:[self openApp:@"open" command:command]
@@ -60,7 +60,7 @@ NSString *const PREFIX_ERROR = @"ERR: ";
 
   if ([action isEqualToString:@"open"])
   {
-    NSData *textData = [text dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *textData = [kInterAppPW dataUsingEncoding:NSUTF8StringEncoding];
 
     
 
