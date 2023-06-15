@@ -91,6 +91,21 @@
     
     NSDictionary *measurement = dict[@"main_measurement"][@"measurements"];
     
+    NSError *err;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:measurement options:0 error:&err]; 
+    
+
+    if (err) {
+        NSLog(@"Got an error: %@", err);
+        result = err;
+    } else {
+        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        NSLog(@"%@", jsonString);
+        result = jsonString;
+    }
+
+
+
 
 /*
     NSString *jsonString = [NSString stringWithFormat:
@@ -103,7 +118,7 @@
                               measurement[@"eschar"],
                               measurement[@"granulation"]
                            ];
-*/
+
 NSString *jsonString = [NSString stringWithFormat:
                             @"Image: %@\ntissue: %@\noutline: %@",
                               [UIImageJPEGRepresentation(dict[@"main_measurement"][@"image"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength],
@@ -113,7 +128,7 @@ NSString *jsonString = [NSString stringWithFormat:
 
     result = jsonString;
 
-
+*/
     
     //[self.woundImgView setImage:self.dataDictionary[@"main_measurement"][@"image"]];
     //[self.classificationImgView setImage:self.dataDictionary[@"main_measurement"][@"tissue"]];
