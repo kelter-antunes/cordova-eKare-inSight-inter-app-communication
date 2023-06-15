@@ -106,6 +106,12 @@
         result = jsonString;
     }
 
+ result = [NSString stringWithFormat:
+                             @"main_measurement: %@",
+                                measurement
+                             ];
+
+
 /*
     result = [NSString stringWithFormat:
                              @"Area: %@\nDepth avg: %@\nDepth max: %@\nVolume: %@\nYellow: %@\nBlue: %@\nRed: %@",
