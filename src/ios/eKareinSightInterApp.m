@@ -11,6 +11,8 @@
 - (void)open:(CDVInvokedUrlCommand*)command {
 	[self.commandDelegate runInBackground:^{
 
+    NSString *result = nil;
+
     NSString *kInterAppPW = [command.arguments objectAtIndex:0];
     NSString *kInterAppScheme = [command.arguments objectAtIndex:1];
     NSString *kInterAppId = [command.arguments objectAtIndex:2];
@@ -55,7 +57,7 @@
        
     }];
 
-		CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:text];
+		CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
 		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 	}];
 }
@@ -63,6 +65,8 @@
 
 - (void)readMeasurements:(CDVInvokedUrlCommand*)command {
 	[self.commandDelegate runInBackground:^{
+
+    NSString *result = nil;
 
     NSString *kInterAppPW = [command.arguments objectAtIndex:0];
     NSString *kInterAppScheme = [command.arguments objectAtIndex:1];
@@ -87,16 +91,16 @@
     
     NSError *err;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:&err]; 
-    NSString *text = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    result = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 
-    if (text == nil) {
-			text = @"";
+    if (result == nil) {
+			result = @"";
 		}
 
     // Clean the the systemwide general pasteboard
     [[UIPasteboard generalPasteboard] setData:[NSData data] forPasteboardType:pastBoard];
 
-		CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:text];
+		CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
 		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 	}];
 }
