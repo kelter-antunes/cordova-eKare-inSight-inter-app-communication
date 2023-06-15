@@ -89,28 +89,15 @@
     // Convert the NSData to NSDictionary
     NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
     
-    NSDictionary *measurement = dict[@"main_measurement"];
-    //NSDictionary *measurement = dict[@"main_measurement"][@"measurements"];
+    NSDictionary *measurement = dict[@"main_measurement"][@"measurements"];
     
 
-    NSError *err;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:measurement options:0 error:&err]; 
-    //result = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *jsonString = [NSString stringWithFormat:
+                              @"{\"area\": \"%@\"}",
+                              measurement[@"area"]
+                           ];
 
-    if (err) {
-        NSLog(@"Got an error: %@", err);
-        result = err;
-    } else {
-        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        NSLog(@"%@", jsonString);
-        result = jsonString;
-    }
-
- result = [NSString stringWithFormat:
-                             @"main_measurement: %@",
-                                measurement
-                             ];
-
+    result = jsonString;
 
 /*
     result = [NSString stringWithFormat:
@@ -128,7 +115,6 @@
     //[self.woundImgView setImage:self.dataDictionary[@"main_measurement"][@"image"]];
     //[self.classificationImgView setImage:self.dataDictionary[@"main_measurement"][@"tissue"]];
     //[self.outlineImgView setImage:self.dataDictionary[@"main_measurement"][@"_outline"]];
-
 
 
     if (result == nil) {
