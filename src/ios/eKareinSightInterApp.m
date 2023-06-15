@@ -66,14 +66,34 @@
     NSString *kInterAppPW = [command.arguments objectAtIndex:0];
     NSString *kInterAppScheme = [command.arguments objectAtIndex:1];
 
-    // Get the measurements data from the pasteboard
-    NSData *text = [[UIPasteboard generalPasteboard] dataForPasteboardType:pastBoard];
+    // interapp scheme to be shared with external system separately
+    NSString *pastBoard = kInterAppScheme;
 
-		//UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-		//NSString     *text       = [pasteboard valueForPasteboardType:@"public.text"];
-		if (text == nil) {
+    // Get the measurements data from the pasteboard
+    NSData *rawData = [[UIPasteboard generalPasteboard] dataForPasteboardType:pastBoard];
+  
+    // The password to be shared with external system separately
+    NSString *password = kInterAppPW;
+  
+    // Decrypt the measurements data
+    NSData *data = [RNDecryptor decryptData: rawData
+                               withSettings:kRNCryptorAES256Settings
+                                  password:password
+                                     error:nil];
+  
+    // Convert the NSData to NSDictionary
+    NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
+    
+    NSError *err;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:&err]; 
+    NSString *text = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    if (text == nil) {
 			text = @"";
 		}
+
+    // Clean the the systemwide general pasteboard
+    [[UIPasteboard generalPasteboard] setData:[NSData data] forPasteboardType:pastBoard];
 
 		CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:text];
 		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
