@@ -3,6 +3,7 @@
 #import <Cordova/CDVPluginResult.h>
 #import "eKareinSightInterApp.h"
 #import "RNEncryptor.h"
+#import "RNDecryptor.h"
 
 @implementation eKareinSightInterApp
 
