@@ -92,6 +92,7 @@
     NSDictionary *measurement = dict[@"main_measurement"][@"measurements"];
     
 
+/*
     NSString *jsonString = [NSString stringWithFormat:
                               @"{\"area\":\"%@\",\"avg_depth\":\"%@\",\"maximum_depth\":\"%@\",\"volume\":\"%@\",\"slough\":\"%@\",\"eschar\":\"%@\",\"granulation\":\"%@\"}",
                               measurement[@"area"],
@@ -102,21 +103,17 @@
                               measurement[@"eschar"],
                               measurement[@"granulation"]
                            ];
+*/
+NSString *jsonString = [NSString stringWithFormat:
+                            @"Image: %@\ntissue: %@\noutline: %@",
+                              dict[@"main_measurement"][@"image"],
+                              dict[@"main_measurement"][@"tissue"],
+                              dict[@"main_measurement"][@"_outline"],
+                           ];
 
     result = jsonString;
 
-/*
-    result = [NSString stringWithFormat:
-                             @"Area: %@\nDepth avg: %@\nDepth max: %@\nVolume: %@\nYellow: %@\nBlue: %@\nRed: %@",
-                                 measurement[@"area"],
-                                 measurement[@"avg_depth"],
-                                 measurement[@"maximum_depth"],
-                                 measurement[@"volume"],
-                                 measurement[@"slough"],
-                                 measurement[@"eschar"],
-                                 measurement[@"granulation"]
-                             ];
-*/
+
     
     //[self.woundImgView setImage:self.dataDictionary[@"main_measurement"][@"image"]];
     //[self.classificationImgView setImage:self.dataDictionary[@"main_measurement"][@"tissue"]];
