@@ -101,7 +101,7 @@
                                  measurement[@"slough"],
                                  measurement[@"eschar"],
                                  measurement[@"granulation"]
-                             ]];
+                             ];
     
     //[self.woundImgView setImage:self.dataDictionary[@"main_measurement"][@"image"]];
     //[self.classificationImgView setImage:self.dataDictionary[@"main_measurement"][@"tissue"]];
