@@ -89,7 +89,8 @@
     // Convert the NSData to NSDictionary
     NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
     
-    NSDictionary *measurement = dict[@"main_measurement"][@"measurements"];
+    NSDictionary *measurement = dict[@"main_measurement"];
+    //NSDictionary *measurement = dict[@"main_measurement"][@"measurements"];
     
 
     NSError *err;
