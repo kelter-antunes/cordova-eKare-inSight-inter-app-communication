@@ -91,7 +91,16 @@
     
     NSError *err;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:&err]; 
-    result = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    //result = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    if (err) {
+        NSLog(@"Got an error: %@", err);
+        result = err;
+    } else {
+        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        NSLog(@"%@", jsonString);
+        result = jsonString;
+    }
 
     if (result == nil) {
 			result = @"";
