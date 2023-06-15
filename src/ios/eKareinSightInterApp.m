@@ -61,7 +61,6 @@ NSString *const PREFIX_ERROR = @"ERR: ";
 
   if ([action isEqualToString:@"open"])
   {
-    
      // Dictionary to be sent to inSight app which should include the hash that will be returned back
     //NSDictionary *clearDict = @{@"hash": @"43934s341049fjls348434", @"data": @"data value"};
 
@@ -81,7 +80,7 @@ NSString *const PREFIX_ERROR = @"ERR: ";
 
 
     // Prepare the parameters to be passed in the URL
-    NSString *params = [NSString stringWithFormat:@"data=%@", measurementsEncryptedString];
+    NSString *params =  [NSString stringWithFormat:@"data=%@&source=%@", measurementsEncryptedString, NSBundle.mainBundle.bundleIdentifier];;
 
 
     // Prepare the URL string:
