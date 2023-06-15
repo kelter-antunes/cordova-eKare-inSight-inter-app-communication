@@ -93,8 +93,14 @@
     
 
     NSString *jsonString = [NSString stringWithFormat:
-                              @"{\"area\": \"%@\"}",
-                              measurement[@"area"]
+                              @"{\"area\":\"%@\",\"avg_depth\":\"%@\",\"maximum_depth\":\"%@\",\"volume\":\"%@\",\"slough\":\"%@\",\"eschar\":\"%@\",\"granulation\":\"%@\"}",
+                              measurement[@"area"],
+                              measurement[@"avg_depth"],
+                              measurement[@"maximum_depth"],
+                              measurement[@"volume"],
+                              measurement[@"slough"],
+                              measurement[@"eschar"],
+                              measurement[@"granulation"]
                            ];
 
     result = jsonString;
