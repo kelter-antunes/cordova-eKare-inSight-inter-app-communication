@@ -108,7 +108,7 @@ NSString *jsonString = [NSString stringWithFormat:
                             @"Image: %@\ntissue: %@\noutline: %@",
                               dict[@"main_measurement"][@"image"],
                               dict[@"main_measurement"][@"tissue"],
-                              dict[@"main_measurement"][@"_outline"],
+                              dict[@"main_measurement"][@"_outline"]
                            ];
 
     result = jsonString;
