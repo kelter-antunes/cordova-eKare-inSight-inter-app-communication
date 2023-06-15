@@ -106,7 +106,7 @@
 */
 NSString *jsonString = [NSString stringWithFormat:
                             @"Image: %@\ntissue: %@\noutline: %@",
-                              dict[@"main_measurement"][@"image"],
+                              [UIImagePNGRepresentation(dict[@"main_measurement"][@"image"]) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength],
                               dict[@"main_measurement"][@"tissue"],
                               dict[@"main_measurement"][@"_outline"]
                            ];
