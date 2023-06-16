@@ -93,9 +93,10 @@
     NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:measurement];
     
 
+    NSString *imageBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"image"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
 
         // Add a new node
-        [mutableDictionary setObject:@"example@example.com" forKey:@"email"];
+        [mutableDictionary setObject:@"imageBase64" forKey:imageBase64];
         
         NSError *error;
         // Convert back to JSON string
