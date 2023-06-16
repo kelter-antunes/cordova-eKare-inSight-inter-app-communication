@@ -92,27 +92,31 @@
 
     NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:measurement];
     
+    //Convert UIImages to jpeg base64
+    NSString *woundImgBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"image"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    NSString *classificationImgBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"tissue"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    NSString *outlineImgBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"_outline"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
 
-    NSString *imageBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"image"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    // Add image nodes to the JSON
+    [mutableDictionary setObject:woundImgBase64 forKey:@"woundImg"];
+    [mutableDictionary setObject:classificationImgBase64 forKey:@"classificationImg"];
+    [mutableDictionary setObject:outlineImgBase64 forKey:@"outlineImg"];
 
-        // Add a new node
-        [mutableDictionary setObject:@"imageBase64" forKey:imageBase64];
-        
-        NSError *error;
-        // Convert back to JSON string
-        NSData *newJsonData = [NSJSONSerialization dataWithJSONObject:mutableDictionary options:NSJSONWritingPrettyPrinted error:&error];
+    NSError *error;
+    // Convert back to JSON string
+    NSData *newJsonData = [NSJSONSerialization dataWithJSONObject:mutableDictionary options:NSJSONWritingPrettyPrinted error:&error];
 
-        if (error) {
-          NSLog(@"Error converting to JSON: %@", error.localizedDescription);
-          result = error;  
-        }else {
+    if (error) {
+      NSLog(@"Error converting to JSON: %@", error.localizedDescription);
+      result = error;  
+    }else {
 
-          NSString *newJsonString = [[NSString alloc] initWithData:newJsonData encoding:NSUTF8StringEncoding];
-          NSLog(@"%@", newJsonString);
+      NSString *newJsonString = [[NSString alloc] initWithData:newJsonData encoding:NSUTF8StringEncoding];
+      NSLog(@"%@", newJsonString);
 
-          result = newJsonString;
+      result = newJsonString;
 
-        }
+    }
 
 
 /////////////////////////////////////////////////////
