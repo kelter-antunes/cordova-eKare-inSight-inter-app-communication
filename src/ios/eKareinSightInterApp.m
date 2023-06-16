@@ -45,7 +45,6 @@
     NSString *urlString = [NSString stringWithFormat:@"%@://%@?%@", scheme, appId, params];
 
 
-
     // Prepare the NSURL that will open inSight app
     NSURL *url = [NSURL URLWithString:urlString];
 
@@ -90,7 +89,33 @@
     NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
     
     NSDictionary *measurement = dict[@"main_measurement"][@"measurements"];
+
+    NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:measurement];
     
+
+
+        // Add a new node
+        [mutableDictionary setObject:@"example@example.com" forKey:@"email"];
+        
+        NSError *error;
+        // Convert back to JSON string
+        NSData *newJsonData = [NSJSONSerialization dataWithJSONObject:mutableDictionary options:NSJSONWritingPrettyPrinted error:&error];
+
+        if (error) {
+          NSLog(@"Error converting to JSON: %@", error.localizedDescription);
+          result = error;  
+        }else {
+
+          NSString *newJsonString = [[NSString alloc] initWithData:newJsonData encoding:NSUTF8StringEncoding];
+          NSLog(@"%@", newJsonString);
+
+          result = newJsonString;
+
+        }
+
+
+/////////////////////////////////////////////////////
+/*
     NSError *err;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:measurement options:0 error:&err]; 
     
@@ -104,7 +129,7 @@
         result = jsonString;
     }
 
-
+*/
 
 
 /*
