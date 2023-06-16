@@ -102,6 +102,14 @@
     [mutableDictionary setObject:classificationImgBase64 forKey:@"classificationImg"];
     [mutableDictionary setObject:outlineImgBase64 forKey:@"outlineImg"];
 
+    // Iterate over dictionary and convert null values to empty strings
+    for (NSString *key in [mutableDictionary allKeys]) {
+        id value = [mutableDictionary objectForKey:key];
+        if ([value isKindOfClass:[NSNull class]]) {
+            [mutableDictionary setObject:@"" forKey:key];
+        }
+    }
+
     NSError *error;
     // Convert back to JSON string
     NSData *newJsonData = [NSJSONSerialization dataWithJSONObject:mutableDictionary options:NSJSONWritingPrettyPrinted error:&error];
