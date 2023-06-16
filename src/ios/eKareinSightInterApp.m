@@ -76,102 +76,59 @@
     // Get the measurements data from the pasteboard
     NSData *rawData = [[UIPasteboard generalPasteboard] dataForPasteboardType:pastBoard];
   
-    // The password to be shared with external system separately
-    NSString *password = kInterAppPW;
-  
-    // Decrypt the measurements data
-    NSData *data = [RNDecryptor decryptData: rawData
-                               withSettings:kRNCryptorAES256Settings
-                                  password:password
-                                     error:nil];
-  
-    // Convert the NSData to NSDictionary
-    NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
-    
-    NSDictionary *measurement = dict[@"main_measurement"][@"measurements"];
+    if (rawData.length > 0) {
+        
+        // The password to be shared with external system separately
+        NSString *password = kInterAppPW;
+      
+        // Decrypt the measurements data
+        NSData *data = [RNDecryptor decryptData: rawData
+                                  withSettings:kRNCryptorAES256Settings
+                                      password:password
+                                        error:nil];
+      
+        // Convert the NSData to NSDictionary
+        NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
+        
+        NSDictionary *measurement = dict[@"main_measurement"][@"measurements"];
 
-    NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:measurement];
-    
-    //Convert UIImages to jpeg base64
-    NSString *woundImgBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"image"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-    NSString *classificationImgBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"tissue"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-    NSString *outlineImgBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"_outline"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:measurement];
+        
+        //Convert UIImages to jpeg base64
+        NSString *woundImgBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"image"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        NSString *classificationImgBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"tissue"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        NSString *outlineImgBase64 = [UIImageJPEGRepresentation(dict[@"main_measurement"][@"_outline"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
 
-    // Add image nodes to the JSON
-    [mutableDictionary setObject:woundImgBase64 forKey:@"woundImg"];
-    [mutableDictionary setObject:classificationImgBase64 forKey:@"classificationImg"];
-    [mutableDictionary setObject:outlineImgBase64 forKey:@"outlineImg"];
+        // Add image nodes to the JSON
+        [mutableDictionary setObject:woundImgBase64 forKey:@"woundImg"];
+        [mutableDictionary setObject:classificationImgBase64 forKey:@"classificationImg"];
+        [mutableDictionary setObject:outlineImgBase64 forKey:@"outlineImg"];
 
-    // Iterate over dictionary and convert null values to empty strings
-    for (NSString *key in [mutableDictionary allKeys]) {
-        id value = [mutableDictionary objectForKey:key];
-        if ([value isKindOfClass:[NSNull class]]) {
-            [mutableDictionary setObject:@"" forKey:key];
+        // Iterate over dictionary and convert null values to empty strings
+        for (NSString *key in [mutableDictionary allKeys]) {
+            id value = [mutableDictionary objectForKey:key];
+            if ([value isKindOfClass:[NSNull class]]) {
+                [mutableDictionary setObject:@"" forKey:key];
+            }
         }
-    }
 
-    NSError *error;
-    // Convert back to JSON string
-    NSData *newJsonData = [NSJSONSerialization dataWithJSONObject:mutableDictionary options:NSJSONWritingPrettyPrinted error:&error];
+        NSError *error;
+        // Convert back to JSON string
+        NSData *newJsonData = [NSJSONSerialization dataWithJSONObject:mutableDictionary options:NSJSONWritingPrettyPrinted error:&error];
 
-    if (error) {
-      NSLog(@"Error converting to JSON: %@", error.localizedDescription);
-      result = error;  
-    }else {
+        if (error) {
+          NSLog(@"Error converting to JSON: %@", error.localizedDescription);
+          result = error;  
+        }else {
 
-      NSString *newJsonString = [[NSString alloc] initWithData:newJsonData encoding:NSUTF8StringEncoding];
-      NSLog(@"%@", newJsonString);
+          NSString *newJsonString = [[NSString alloc] initWithData:newJsonData encoding:NSUTF8StringEncoding];
+          NSLog(@"%@", newJsonString);
 
-      result = newJsonString;
+          result = newJsonString;
 
-    }
-
-
-/////////////////////////////////////////////////////
-/*
-    NSError *err;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:measurement options:0 error:&err]; 
-    
-
-    if (err) {
-        NSLog(@"Got an error: %@", err);
-        result = err;
-    } else {
-        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        NSLog(@"%@", jsonString);
-        result = jsonString;
-    }
-
-*/
-
-
-/*
-    NSString *jsonString = [NSString stringWithFormat:
-                              @"{\"area\":\"%@\",\"avg_depth\":\"%@\",\"maximum_depth\":\"%@\",\"volume\":\"%@\",\"slough\":\"%@\",\"eschar\":\"%@\",\"granulation\":\"%@\"}",
-                              measurement[@"area"],
-                              measurement[@"avg_depth"],
-                              measurement[@"maximum_depth"],
-                              measurement[@"volume"],
-                              measurement[@"slough"],
-                              measurement[@"eschar"],
-                              measurement[@"granulation"]
-                           ];
-
-NSString *jsonString = [NSString stringWithFormat:
-                            @"Image: %@\ntissue: %@\noutline: %@",
-                              [UIImageJPEGRepresentation(dict[@"main_measurement"][@"image"], 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength],
-                              dict[@"main_measurement"][@"tissue"],
-                              dict[@"main_measurement"][@"_outline"]
-                           ];
-
-    result = jsonString;
-
-*/
-    
-    //[self.woundImgView setImage:self.dataDictionary[@"main_measurement"][@"image"]];
-    //[self.classificationImgView setImage:self.dataDictionary[@"main_measurement"][@"tissue"]];
-    //[self.outlineImgView setImage:self.dataDictionary[@"main_measurement"][@"_outline"]];
-
+        }
+        
+    } 
 
     if (result == nil) {
 			result = @"";
