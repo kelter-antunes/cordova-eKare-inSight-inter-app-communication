@@ -20,7 +20,7 @@
 
     NSString *pasteBoardName = [NSBundle mainBundle].bundleIdentifier;
     // Prepare the parameters to be passed in the URL
-    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, pasteBoardName, @"measure-demo"];
+    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, pasteBoardName, kInterAppScheme];
     
 
     // Prepare the URL string:
@@ -54,10 +54,24 @@
     NSString *kInterAppScheme = [command.arguments objectAtIndex:1];
 
     // interapp scheme to be shared with external system separately
-    NSString *pastBoard = kInterAppScheme;
+    //NSString *pasteBoardName = kInterAppScheme;
+
+    // This function is called when inSight calls back the external app
+
+    // interapp scheme to be shared with external system separately
+    // Clean the the systemwide general pasteboard
+    NSString *pasteBoardName = NSBundle.mainBundle.bundleIdentifier;
+    UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:pasteBoardName create:NO];
+
 
     // Get the measurements data from the pasteboard
-    NSData *rawData = [[UIPasteboard generalPasteboard] dataForPasteboardType:pastBoard];
+    NSData *rawData;
+    for (NSDictionary *item in [pasteBoard items]) {
+        if ([item objectForKey:@"encrypted_data"]) {
+            rawData = [item objectForKey:@"encrypted_data"];
+        }
+    }
+
   
     if (rawData.length > 0) {
         
