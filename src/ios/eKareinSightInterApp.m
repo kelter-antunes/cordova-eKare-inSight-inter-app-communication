@@ -132,7 +132,7 @@
 		}
 
     // Clean the the systemwide general pasteboard
-    [[UIPasteboard generalPasteboard] setData:[NSData data] forPasteboardType:pastBoard];
+    [pasteBoard setItems:[NSArray array]];
 
 		CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
 		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
