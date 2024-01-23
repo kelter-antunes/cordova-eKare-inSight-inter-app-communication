@@ -27,7 +27,7 @@
           <key>CFBundleTypeRole</key>
             <string>None</string>
           <key>CFBundleURLName</key>
-            <string>com.ekareinc.insight.interappdemo</string>
+            <string>com.ekareinc.insight.standard</string>
           <key>CFBundleURLSchemes</key>
           <array>
             <string>measure-demo</string>
