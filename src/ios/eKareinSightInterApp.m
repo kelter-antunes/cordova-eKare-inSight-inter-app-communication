@@ -87,8 +87,10 @@
         // Convert the NSData to NSDictionary
         NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
         
-        NSDictionary *measurement = dict[@"main_measurement"][@"measurements"];
 
+        NSString *measurementJSON = dict[@"measurement"][@"measurements"];
+
+/*
         NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:measurement];
         
         //Convert UIImages to jpeg base64
@@ -126,13 +128,16 @@
         }
         
     } 
+  */
+
+    result = measurementJSON;
 
     if (result == nil) {
 			result = @"";
 		}
 
     // Clean the the systemwide general pasteboard
-    [pasteBoard setItems:[NSArray array]];
+    //[pasteBoard setItems:[NSArray array]];
 
 		CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
 		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
