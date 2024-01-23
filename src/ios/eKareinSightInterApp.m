@@ -62,16 +62,22 @@
     // Clean the the systemwide general pasteboard
     //NSString *pasteBoardName = NSBundle.mainBundle.bundleIdentifier;
     NSString *pasteBoardName = kInterAppScheme;
-    UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:pasteBoardName create:NO];
+    //UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:pasteBoardName create:NO];
+
+
+
+
+    // .OLD Get the measurements data from the pasteboard
+    NSData *rawData = [[UIPasteboard generalPasteboard] dataForPasteboardType:pasteBoardName];
 
 
     // Get the measurements data from the pasteboard
-    NSData *rawData;
-    for (NSDictionary *item in [pasteBoard items]) {
-        if ([item objectForKey:@"encrypted_data"]) {
-            rawData = [item objectForKey:@"encrypted_data"];
-        }
-    }
+    //NSData *rawData;
+    //for (NSDictionary *item in [pasteBoard items]) {
+    //    if ([item objectForKey:@"encrypted_data"]) {
+    //        rawData = [item objectForKey:@"encrypted_data"];
+    //    }
+    //}
 
   
     //if (rawData.length > 0) {
