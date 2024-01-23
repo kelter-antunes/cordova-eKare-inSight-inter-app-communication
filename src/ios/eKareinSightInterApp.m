@@ -61,7 +61,7 @@
     // interapp scheme to be shared with external system separately
     // Clean the the systemwide general pasteboard
     //NSString *pasteBoardName = NSBundle.mainBundle.bundleIdentifier;
-    NSString *pasteBoardName = @"measure-demo";
+    NSString *pasteBoardName = kInterAppScheme;
     UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:pasteBoardName create:NO];
 
 
