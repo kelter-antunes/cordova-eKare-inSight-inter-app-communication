@@ -20,8 +20,8 @@
 
     NSString *pasteBoardName = [NSBundle mainBundle].bundleIdentifier;
     // Prepare the parameters to be passed in the URL
-    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, pasteBoardName, @"measure-demo"];
-    
+    //NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, pasteBoardName, @"measure-demo"];
+    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, @"measure-demo", @"measure-demo"];
 
     // Prepare the URL string:
     NSString *scheme = kInterAppScheme;
@@ -60,7 +60,8 @@
 
     // interapp scheme to be shared with external system separately
     // Clean the the systemwide general pasteboard
-    NSString *pasteBoardName = NSBundle.mainBundle.bundleIdentifier;
+    //NSString *pasteBoardName = NSBundle.mainBundle.bundleIdentifier;
+    NSString *pasteBoardName = @"measure-demo";
     UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:pasteBoardName create:NO];
 
 
