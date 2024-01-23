@@ -52,7 +52,7 @@
     <source-file src="src/ios/RNCryptor/RNEncryptor.m" />
 
 
-    <source-file src="src/ios/interapp.dat" />
+    <!-- <source-file src="src/ios/interapp.dat" />-->
 
  
 
