@@ -17,33 +17,16 @@
     NSString *kInterAppScheme = [command.arguments objectAtIndex:1];
     NSString *kInterAppId = [command.arguments objectAtIndex:2];
 
-    // Dictionary to be sent to inSight app which should include the hash that will be returned back
-    //NSDictionary *clearDict = @{@"hash": @"43934s341049fjls348434", @"data": @"data value"};
-    //NSData *measurementsClearData = [NSKeyedArchiver archivedDataWithRootObject:clearDict];
 
-    // Convert the NSDictionary object to NSData object
-    NSData *measurementsClearData = [NSData dataWithContentsOfFile:[NSBundle.mainBundle pathForResource:@"interapp" ofType:@"dat"]];
-
-    
-    // Encryption password
-    NSString *password = kInterAppPW;
-
-    // Encrypt Data (AES256) using RNEncryptor library
-    NSData *measurementsEncryptedData = [RNEncryptor encryptData:measurementsClearData withSettings:kRNCryptorAES256Settings password:password error:nil];
-    
-    // Convert encrypted data to NSString
-    NSString *measurementsEncryptedString = [measurementsEncryptedData base64EncodedStringWithOptions:0];
-
-
+    NSString *pasteBoardName = [NSBundle mainBundle].bundleIdentifier;
     // Prepare the parameters to be passed in the URL
-    NSString *params =  [NSString stringWithFormat:@"data=%@&source=%@", measurementsEncryptedString, NSBundle.mainBundle.bundleIdentifier];;
-
+    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, pasteBoardName, @"measure-demo"];
+    
 
     // Prepare the URL string:
     NSString *scheme = kInterAppScheme;
     NSString *appId = kInterAppId;
     NSString *urlString = [NSString stringWithFormat:@"%@://%@?%@", scheme, appId, params];
-
 
     // Prepare the NSURL that will open inSight app
     NSURL *url = [NSURL URLWithString:urlString];
