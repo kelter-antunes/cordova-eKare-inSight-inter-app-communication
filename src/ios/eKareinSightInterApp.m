@@ -90,6 +90,8 @@
 
         NSString *measurementJSON = dict[@"measurement"][@"measurements"];
 
+        result = measurementJSON;
+
 /*
         NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:measurement];
         
@@ -126,11 +128,8 @@
           result = newJsonString;
 
         }
-        
+          */
     } 
-  */
-
-    result = measurementJSON;
 
     if (result == nil) {
 			result = @"";
