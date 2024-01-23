@@ -20,7 +20,7 @@
 
     NSString *pasteBoardName = [NSBundle mainBundle].bundleIdentifier;
     // Prepare the parameters to be passed in the URL
-    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, pasteBoardName, kInterAppScheme];
+    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, pasteBoardName, @"measure-demo"];
     
 
     // Prepare the URL string:
