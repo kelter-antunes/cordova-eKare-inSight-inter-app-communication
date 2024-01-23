@@ -74,7 +74,7 @@
     }
 
   
-    if (rawData.length > 0) {
+    //if (rawData.length > 0) {
         
         // The password to be shared with external system separately
         NSString *password = kInterAppPW;
@@ -130,7 +130,9 @@
 
         }
           */
-    } 
+    
+    
+    //} 
 
     if (result == nil) {
 			result = @"";
