@@ -55,14 +55,10 @@
 
     UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:kInterAppPasteBoardName create:NO];
 
-
-
-    NSArray *supportedTypes = [pasteBoard pasteboardTypes];
-
-    if ([pasteBoard hasDataConformingToTypes:supportedTypes]) {
+    NSArray *pasteboardTypes = [pasteBoard pasteboardTypes];
+    if (pasteboardTypes.count > 0) {
         NSLog(@"Clipboard has content");
         result = @"Clipboard has content";
-        
     } else {
         NSLog(@"Clipboard is empty");
         result = @"Clipboard is empty";
