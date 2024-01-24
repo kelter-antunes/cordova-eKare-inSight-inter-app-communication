@@ -21,24 +21,31 @@ function eKareinSightInterApp () {}
 
 /**
  * Opens eKareinSight app and stores measurments in the clipboard content
- *
+ * @param {String}   kInterAppId
  * @param {String}   kInterAppPW      
- * @param {String}   kInterAppScheme
+ * @param {String}   kInterAppMeasurementScheme
+ * @param {String}   kInterAppCallbackScheme
  * @param {String}   kInterAppPasteBoardName
  * @param {Function} onSuccess The function to call in case of success (takes the copied text as argument)
  * @param {Function} onFail    The function to call in case of error
  */
-eKareinSightInterApp.prototype.open = function (kInterAppPW, kInterAppScheme, kInterAppPasteBoardName, onSuccess, onFail) {
+eKareinSightInterApp.prototype.open = function (kInterAppId, kInterAppPW, kInterAppMeasurementScheme, kInterAppCallbackScheme, kInterAppPasteBoardName, onSuccess, onFail) {
+  if (typeof kInterAppId === "undefined" || kInterAppId === null){
+    kInterAppId = ""
+  }
   if (typeof kInterAppPW === "undefined" || kInterAppPW === null){
     kInterAppPW = ""
   }
-  if (typeof kInterAppScheme === "undefined" || kInterAppScheme === null){
-    kInterAppScheme = ""
+  if (typeof kInterAppMeasurementScheme === "undefined" || kInterAppMeasurementScheme === null){
+    kInterAppMeasurementScheme = ""
+  }
+  if (typeof kInterAppCallbackScheme === "undefined" || kInterAppCallbackScheme === null){
+    kInterAppCallbackScheme = ""
   }
   if (typeof kInterAppPasteBoardName === "undefined" || kInterAppPasteBoardName === null){
     kInterAppPasteBoardName = ""
   }
-  cordova.exec(onSuccess, onFail, PLUGIN_NAME, "open", [kInterAppPW, kInterAppScheme, kInterAppPasteBoardName]);
+  cordova.exec(onSuccess, onFail, PLUGIN_NAME, "open", [kInterAppId, kInterAppPW, kInterAppMeasurementScheme, kInterAppCallbackScheme, kInterAppPasteBoardName]);
 };
 
 

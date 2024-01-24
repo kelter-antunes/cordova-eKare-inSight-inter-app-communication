@@ -13,18 +13,18 @@
 
     NSString *result = nil;
 
-    NSString *kInterAppPW = [command.arguments objectAtIndex:0];
-    NSString *kInterAppScheme = [command.arguments objectAtIndex:1];
-    NSString *kInterAppPasteBoardName = [command.arguments objectAtIndex:2];
+    NSString *kInterAppId = [command.arguments objectAtIndex:0];
+    NSString *kInterAppPW = [command.arguments objectAtIndex:1];
+    NSString *kInterAppMeasurementScheme = [command.arguments objectAtIndex:2];
+    NSString *kInterAppCallbackScheme = [command.arguments objectAtIndex:3];
+    NSString *kInterAppPasteBoardName = [command.arguments objectAtIndex:4];
 
 
-    NSString *pasteBoardName = kInterAppPasteBoardName;
     // Prepare the parameters to be passed in the URL
-    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, pasteBoardName, kInterAppScheme];
+    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  kInterAppId, kInterAppPasteBoardName, kInterAppCallbackScheme];
     
     // Prepare the URL string:
-    NSString *scheme = kInterAppScheme;
-    NSString *urlString = [NSString stringWithFormat:@"%@://%@?%@", kInterAppScheme, NSBundle.mainBundle.bundleIdentifier, params];
+    NSString *urlString = [NSString stringWithFormat:@"%@://%@?%@", kInterAppMeasurementScheme, kInterAppId, params];
 
     // Prepare the NSURL that will open inSight app
     NSURL *url = [NSURL URLWithString:urlString];
