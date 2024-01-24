@@ -62,7 +62,7 @@
     if ([pasteBoard hasDataConformingToTypes:supportedTypes]) {
         NSLog(@"Clipboard has content");
         result = @"Clipboard has content";
-        // You can proceed to access and retrieve data from the pasteboard if needed
+        
     } else {
         NSLog(@"Clipboard is empty");
         result = @"Clipboard is empty";
