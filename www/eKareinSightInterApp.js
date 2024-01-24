@@ -24,21 +24,21 @@ function eKareinSightInterApp () {}
  *
  * @param {String}   kInterAppPW      
  * @param {String}   kInterAppScheme
- * @param {String}   kInterAppId
+ * @param {String}   kInterAppPasteBoardName
  * @param {Function} onSuccess The function to call in case of success (takes the copied text as argument)
  * @param {Function} onFail    The function to call in case of error
  */
-eKareinSightInterApp.prototype.open = function (kInterAppPW, kInterAppScheme, kInterAppId, onSuccess, onFail) {
+eKareinSightInterApp.prototype.open = function (kInterAppPW, kInterAppScheme, kInterAppPasteBoardName, onSuccess, onFail) {
   if (typeof kInterAppPW === "undefined" || kInterAppPW === null){
     kInterAppPW = ""
   }
   if (typeof kInterAppScheme === "undefined" || kInterAppScheme === null){
     kInterAppScheme = ""
   }
-  if (typeof kInterAppId === "undefined" || kInterAppId === null){
-    kInterAppId = ""
+  if (typeof kInterAppPasteBoardName === "undefined" || kInterAppPasteBoardName === null){
+    kInterAppPasteBoardName = ""
   }
-  cordova.exec(onSuccess, onFail, PLUGIN_NAME, "open", [kInterAppPW, kInterAppScheme, kInterAppId]);
+  cordova.exec(onSuccess, onFail, PLUGIN_NAME, "open", [kInterAppPW, kInterAppScheme, kInterAppPasteBoardName]);
 };
 
 
@@ -46,19 +46,19 @@ eKareinSightInterApp.prototype.open = function (kInterAppPW, kInterAppScheme, kI
  * Gets the measurments data from the clipboard content
  *
  * @param {String}   kInterAppPW      
- * @param {String}   kInterAppScheme
+ * @param {String}   kInterAppPasteBoardName
  * @param {Function} onSuccess The function to call in case of success
  * @param {Function} onFail    The function to call in case of error
  */
-eKareinSightInterApp.prototype.readMeasurements = function (kInterAppPW, kInterAppScheme, onSuccess, onFail) {
+eKareinSightInterApp.prototype.readMeasurements = function (kInterAppPW, kInterAppPasteBoardName, onSuccess, onFail) {
   if (typeof kInterAppPW === "undefined" || kInterAppPW === null){
     kInterAppPW = ""
   }
-  if (typeof kInterAppScheme === "undefined" || kInterAppScheme === null){
-    kInterAppScheme = ""
+  if (typeof kInterAppPasteBoardName === "undefined" || kInterAppPasteBoardName === null){
+    kInterAppPasteBoardName = ""
   }
 
-	cordova.exec(onSuccess, onFail, PLUGIN_NAME, "readMeasurements", [kInterAppPW, kInterAppScheme]);
+	cordova.exec(onSuccess, onFail, PLUGIN_NAME, "readMeasurements", [kInterAppPW, kInterAppPasteBoardName]);
 };
 
 

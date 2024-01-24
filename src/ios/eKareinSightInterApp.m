@@ -15,18 +15,16 @@
 
     NSString *kInterAppPW = [command.arguments objectAtIndex:0];
     NSString *kInterAppScheme = [command.arguments objectAtIndex:1];
-    NSString *kInterAppId = [command.arguments objectAtIndex:2];
+    NSString *kInterAppPasteBoardName = [command.arguments objectAtIndex:2];
 
 
-    NSString *pasteBoardName = [NSBundle mainBundle].bundleIdentifier;
+    NSString *pasteBoardName = kInterAppPasteBoardName;
     // Prepare the parameters to be passed in the URL
-    //NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, pasteBoardName, @"measure-demo"];
-    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, @"measure-demo", @"measure-demo"];
-
+    NSString *params = [NSString stringWithFormat:@"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",  NSBundle.mainBundle.bundleIdentifier, pasteBoardName, kInterAppScheme];
+    
     // Prepare the URL string:
     NSString *scheme = kInterAppScheme;
-    NSString *appId = kInterAppId;
-    NSString *urlString = [NSString stringWithFormat:@"%@://%@?%@", scheme, appId, params];
+    NSString *urlString = [NSString stringWithFormat:@"%@://%@?%@", kInterAppScheme, NSBundle.mainBundle.bundleIdentifier, params];
 
     // Prepare the NSURL that will open inSight app
     NSURL *url = [NSURL URLWithString:urlString];
@@ -51,7 +49,7 @@
     NSString *result = nil;
 
     NSString *kInterAppPW = [command.arguments objectAtIndex:0];
-    NSString *kInterAppScheme = [command.arguments objectAtIndex:1];
+    NSString *kInterAppPasteBoardName = [command.arguments objectAtIndex:1];
 
     // interapp scheme to be shared with external system separately
     //NSString *pasteBoardName = kInterAppScheme;
@@ -61,7 +59,7 @@
     // interapp scheme to be shared with external system separately
     // Clean the the systemwide general pasteboard
     //NSString *pasteBoardName = NSBundle.mainBundle.bundleIdentifier;
-    NSString *pasteBoardName = kInterAppScheme;
+    NSString *pasteBoardName = kInterAppPasteBoardName;
     //UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:pasteBoardName create:NO];
 
 
