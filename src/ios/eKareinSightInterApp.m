@@ -46,10 +46,60 @@
 - (void)readMeasurements:(CDVInvokedUrlCommand*)command {
 	[self.commandDelegate runInBackground:^{
 
+    // This function is called when inSight calls back the external app
+
     NSString *result = nil;
 
     NSString *kInterAppPW = [command.arguments objectAtIndex:0];
     NSString *kInterAppPasteBoardName = [command.arguments objectAtIndex:1];
+
+    UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:kInterAppPasteBoardName create:NO];
+
+    // Get the measurements data from the pasteboard
+      NSData *rawData;
+      for (NSDictionary *item in [pasteBoard items]) {
+          if ([item objectForKey:@"encrypted_data"]) {
+              rawData = [item objectForKey:@"encrypted_data"];
+          }
+      }
+    
+
+  // The password to be shared with external system separately
+  NSString *password = kInterAppPW;
+  
+  // Decrypt the measurements data
+  NSData *data = [RNDecryptor decryptData: rawData
+                             withSettings:kRNCryptorAES256Settings
+                                 password:password
+                                    error:nil];
+  
+  // Convert the NSData to NSDictionary
+  NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
+
+
+  NSError *error;
+  NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
+                                                    options:NSJSONWritingPrettyPrinted // Use NSJSONWritingPrettyPrinted for a nicely formatted JSON
+                                                      error:&error];
+
+  if (!jsonData) {
+      NSLog(@"Error converting NSDictionary to JSON: %@", error.localizedDescription);
+      result = @"Error converting NSDictionary to JSON: %@", error.localizedDescription;
+  } else {
+      NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+      NSLog(@"JSON String: %@", jsonString);
+      result = @"JSON String: %@", jsonString;
+      
+  }
+
+
+
+
+
+
+
+
+
 
     // interapp scheme to be shared with external system separately
     //NSString *pasteBoardName = kInterAppScheme;
@@ -66,7 +116,7 @@
 
 
     // .OLD Get the measurements data from the pasteboard
-    NSData *rawData = [[UIPasteboard generalPasteboard] dataForPasteboardType:pasteBoardName];
+    //NSData *rawData = [[UIPasteboard generalPasteboard] dataForPasteboardType:pasteBoardName];
 
 
     // Get the measurements data from the pasteboard
@@ -77,7 +127,7 @@
     //    }
     //}
 
-  
+  /*
     //if (rawData.length > 0) {
         
         // The password to be shared with external system separately
@@ -97,7 +147,7 @@
 
         result = measurementJSON;
 
-/*
+
         NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:measurement];
         
         //Convert UIImages to jpeg base64
@@ -133,14 +183,14 @@
           result = newJsonString;
 
         }
-          */
+          
     
     
     //} 
 
     if (result == nil) {
 			result = @"";
-		}
+		}*/
 
     // Clean the the systemwide general pasteboard
     //[pasteBoard setItems:[NSArray array]];
