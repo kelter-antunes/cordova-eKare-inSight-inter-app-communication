@@ -55,42 +55,32 @@
 
     UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:kInterAppPasteBoardName create:NO];
 
-    // Get the measurements data from the pasteboard
-      NSData *rawData;
-      for (NSDictionary *item in [pasteBoard items]) {
-          if ([item objectForKey:@"encrypted_data"]) {
-              rawData = [item objectForKey:@"encrypted_data"];
-          }
-      }
-    
 
-  // The password to be shared with external system separately
-  NSString *password = kInterAppPW;
-  
-  // Decrypt the measurements data
-  NSData *data = [RNDecryptor decryptData: rawData
-                             withSettings:kRNCryptorAES256Settings
-                                 password:password
-                                    error:nil];
-  
-  // Convert the NSData to NSDictionary
-  NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
+    // Concatenate all keys and values from the pasteboard into a single string
+    NSMutableString *resultString = [NSMutableString string];
 
+    for (NSDictionary *item in [pasteBoard items]) {
+        [resultString appendString:@"Pasteboard item:\n"];
+        
+        for (NSString *key in item) {
+            id value = item[key];
+            [resultString appendFormat:@"   Key: %@, Value: %@", key, value];
+            
+            // If the value is an NSString, append it to the result string
+            if ([value isKindOfClass:[NSString class]]) {
+                [resultString appendFormat:@"   Text: %@\n", (NSString *)value];
+            } else {
+                [resultString appendString:@"\n"];
+            }
+        }
+        
+        [resultString appendString:@"\n"];
+    }
 
-  NSError *error;
-  NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
-                                                    options:NSJSONWritingPrettyPrinted // Use NSJSONWritingPrettyPrinted for a nicely formatted JSON
-                                                      error:&error];
+    // Print or use the concatenated result string
+    NSLog(@"%@", resultString);
+    result = resultString;
 
-  if (!jsonData) {
-      NSLog(@"Error converting NSDictionary to JSON: %@", error.localizedDescription);
-      result = @"Error converting NSDictionary to JSON: %@", error.localizedDescription;
-  } else {
-      NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-      NSLog(@"JSON String: %@", jsonString);
-      result = @"JSON String: %@", jsonString;
-      
-  }
 
 
 
@@ -109,7 +99,7 @@
     // interapp scheme to be shared with external system separately
     // Clean the the systemwide general pasteboard
     //NSString *pasteBoardName = NSBundle.mainBundle.bundleIdentifier;
-    NSString *pasteBoardName = kInterAppPasteBoardName;
+    //NSString *pasteBoardName = kInterAppPasteBoardName;
     //UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:pasteBoardName create:NO];
 
 
