@@ -53,7 +53,9 @@
     NSString *kInterAppPW = [command.arguments objectAtIndex:0];
     NSString *kInterAppPasteBoardName = [command.arguments objectAtIndex:1];
 
-    UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:kInterAppPasteBoardName create:NO];
+    // Get the measurements data from the pasteboard
+    //UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:kInterAppPasteBoardName create:NO];
+    NSData *pasteBoard = [[UIPasteboard generalPasteboard] dataForPasteboardType:kInterAppPasteBoardName];
 
     NSArray *pasteboardTypes = [pasteBoard pasteboardTypes];
     if (pasteboardTypes.count > 0) {
