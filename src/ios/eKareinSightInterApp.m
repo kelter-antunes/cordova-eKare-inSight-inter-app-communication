@@ -58,7 +58,7 @@
 
 
     // Get the measurements data from the pasteboard
-    UIPasteboard *pasteBoard = [[UIPasteboard generalPasteboard] dataForPasteboardType:kInterAppPasteBoardName];
+    // UIPasteboard *pasteBoard = [[UIPasteboard generalPasteboard] dataForPasteboardType:kInterAppPasteBoardName];
 
 
     // Get the measurements data from the pasteboard
