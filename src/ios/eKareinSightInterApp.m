@@ -57,18 +57,7 @@
     //UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:kInterAppPasteBoardName create:NO];
     NSData *pasteBoard = [[UIPasteboard generalPasteboard] dataForPasteboardType:kInterAppPasteBoardName];
 
-    NSArray *pasteboardTypes = [pasteBoard pasteboardTypes];
-    if (pasteboardTypes.count > 0) {
-        NSLog(@"Clipboard has content");
-        result = @"Clipboard has content";
-    } else {
-        NSLog(@"Clipboard is empty");
-        result = @"Clipboard is empty";
-    }
 
-
-
-/*
     // Concatenate all keys and values from the pasteboard into a single string
     NSMutableString *resultString = [NSMutableString string];
 
@@ -93,15 +82,6 @@
     // Print or use the concatenated result string
     NSLog(@"%@", resultString);
     result = resultString;
-*/
-
-
-
-
-
-
-
-
 
 
 
