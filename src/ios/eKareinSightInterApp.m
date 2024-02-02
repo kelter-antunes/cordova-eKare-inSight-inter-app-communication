@@ -95,37 +95,33 @@ if (!encryptedData) {
         NSDictionary *measurementDict = nil;
         @try {
             measurementDict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+
+            NSError *jsonError = nil;
+            @try {
+                // Use 'measurementDict' as needed
+                // For example, you can convert it to JSON representation if needed
+                NSData *fullData = [NSJSONSerialization dataWithJSONObject:measurementDict options:0 error:&jsonError];
+
+                if (jsonError) {
+                    NSLog(@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription);
+                    result = [NSString stringWithFormat:@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription];
+                } else {
+                    NSString *fullDataJSON = [[NSString alloc] initWithData:fullData encoding:NSUTF8StringEncoding];
+                    result = fullDataJSON;
+                }
+
+            } @catch (NSException *exception) {
+                NSLog(@"Error processing decrypted data: %@", exception.reason);
+                result = [NSString stringWithFormat:@"Error processing decrypted data: %@", exception.reason];
+            }
+
         } @catch (NSException *exception) {
             NSLog(@"Error unarchiving decrypted data: %@", exception.reason);
             result = [NSString stringWithFormat:@"Error unarchiving decrypted data: %@", exception.reason];
         }
-
-        // Log the decrypted dictionary
-        NSLog(@"Decrypted Dictionary: %@", measurementDict);
-
-        if (measurementDict) {
-            NSString *measurementJSON = measurementDict[@"measurement"][@"measurements"];
-            result = measurementJSON;
-
-            NSData *measurementData = [measurementJSON dataUsingEncoding:NSUTF8StringEncoding];
-
-            NSError *jsonError = nil;
-            @try {
-                NSArray *measurements = [NSJSONSerialization JSONObjectWithData:measurementData options:0 error:&jsonError];
-                NSDictionary *measurement = measurements[0];
-
-                // Use 'measurement' as needed
-
-            } @catch (NSException *exception) {
-                NSLog(@"Error parsing JSON data: %@", exception.reason);
-                result = [NSString stringWithFormat:@"Error parsing JSON data: %@", exception.reason];
-            } @catch (NSError *error) {
-                NSLog(@"Error parsing JSON data: %@", error.localizedDescription);
-                result = [NSString stringWithFormat:@"Error parsing JSON data: %@", error.localizedDescription];
-            }
-        }
     }
 }
+
 
 
 
