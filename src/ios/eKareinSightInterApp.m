@@ -55,8 +55,33 @@
 
     // Get the measurements data from the pasteboard
     //UIPasteboard *pasteBoard = [UIPasteboard pasteboardWithName:kInterAppPasteBoardName create:NO];
-    NSData *pasteBoard = [[UIPasteboard generalPasteboard] dataForPasteboardType:kInterAppPasteBoardName];
 
+
+    // Get the measurements data from the pasteboard
+    UIPasteboard *pasteBoard = [[UIPasteboard generalPasteboard] dataForPasteboardType:kInterAppPasteBoardName];
+
+
+    // Get the measurements data from the pasteboard
+    UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
+    NSData *pasteBoardData = [pasteBoard dataForPasteboardType:kInterAppPasteBoardName];
+
+    // Check if there is data in the pasteboard
+    if (pasteBoardData) {
+        // Proceed with processing the pasteboard data
+         NSLog(@"Found data in the pasteboard.");
+         result = @"Found data in the pasteboard.";
+    } else {
+        NSLog(@"No data found in the pasteboard.");
+        result = @"No data found in the pasteboard.";
+        // Handle the case when there is no data in the pasteboard
+    }
+
+
+
+
+
+
+/*
 
     // Concatenate all keys and values from the pasteboard into a single string
     NSMutableString *resultString = [NSMutableString string];
@@ -83,7 +108,7 @@
     NSLog(@"%@", resultString);
     result = resultString;
 
-
+*/
 
 
     // interapp scheme to be shared with external system separately
