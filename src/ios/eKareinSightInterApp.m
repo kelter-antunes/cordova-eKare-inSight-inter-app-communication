@@ -63,24 +63,10 @@
 
     // Get the measurements data from the pasteboard
     UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
-    NSData *pasteBoardData = [pasteBoard dataForPasteboardType:kInterAppPasteBoardName];
-
-    // Check if there is data in the pasteboard
-    if (pasteBoardData) {
-        // Proceed with processing the pasteboard data
-         NSLog(@"Found data in the pasteboard.");
-         result = @"Found data in the pasteboard.";
-    } else {
-        NSLog(@"No data found in the pasteboard.");
-        result = @"No data found in the pasteboard.";
-        // Handle the case when there is no data in the pasteboard
-    }
+    //NSData *pasteBoardData = [pasteBoard dataForPasteboardType:kInterAppPasteBoardName];
 
 
-
-/*
-
-  // Get the measurements data from the pasteboard
+    // Get the measurements data from the pasteboard
     NSData *rawData;
     NSString *string = pasteBoard.string;
     NSArray *strings = pasteBoard.strings;
@@ -101,41 +87,26 @@
                                  password:password
                                     error:nil];
   
+
   // Convert the NSData to NSDictionary
   NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
 
-  result = @"dict = %@", dict;
 
 
-*/
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
+                                                    options:NSJSONWritingPrettyPrinted
+                                                        error:&error];
 
-
-
-
-    // Concatenate all keys and values from the pasteboard into a single string
-    NSMutableString *resultString = [NSMutableString string];
-
-    for (NSDictionary *item in [pasteBoard items]) {
-        [resultString appendString:@"Pasteboard item:\n"];
-        
-        for (NSString *key in item) {
-            id value = item[key];
-            [resultString appendFormat:@"   Key: %@, Value: %@", key, value];
-            
-            // If the value is an NSString, append it to the result string
-            if ([value isKindOfClass:[NSString class]]) {
-                [resultString appendFormat:@"   Text: %@\n", (NSString *)value];
-            } else {
-                [resultString appendString:@"\n"];
-            }
-        }
-        
-        [resultString appendString:@"\n"];
+    if (!jsonData) {
+        NSLog(@"Error converting NSDictionary to JSON: %@", error.localizedDescription);
+        result = @"Error converting NSDictionary to JSON: %@", error.localizedDescription;
+    } else {
+        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        NSLog(@"JSON representation of NSDictionary: %@", jsonString);
+        result = @"JSON representation of NSDictionary: %@", jsonString;
     }
 
-    // Print or use the concatenated result string
-    NSLog(@"%@", resultString);
-    result = resultString;
 
 
 
