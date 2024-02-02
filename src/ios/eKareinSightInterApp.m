@@ -63,8 +63,6 @@
 
     // Get the measurements data from the pasteboard
     UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
-    //NSData *pasteBoardData = [pasteBoard dataForPasteboardType:kInterAppPasteBoardName];
-
 
     // Get the measurements data from the pasteboard
     NSData *rawData;
@@ -75,38 +73,51 @@
             rawData = [item objectForKey:@"encrypted_data"];
         }
     }
-    
 
-  
-  // The password to be shared with external system separately
-  NSString *password = kInterAppPW;
-  
-  // Decrypt the measurements data
-  NSData *data = [RNDecryptor decryptData:rawData
-                             withSettings:kRNCryptorAES256Settings
-                                 password:password
-                                    error:nil];
-  
-
-  // Convert the NSData to NSDictionary
-  NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
-
-
-
-    NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
-                                                    options:NSJSONWritingPrettyPrinted
-                                                        error:&error];
-
-    if (!jsonData) {
-        NSLog(@"Error converting NSDictionary to JSON: %@", error.localizedDescription);
-        result = @"Error converting NSDictionary to JSON: %@", error.localizedDescription;
+    // Check for nil or empty rawData
+    if (!rawData || [rawData length] == 0) {
+        NSLog(@"Error: No valid data found in pasteboard");
+        result = @"Error: No valid data found in pasteboard";
     } else {
-        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        NSLog(@"JSON representation of NSDictionary: %@", jsonString);
-        result = @"JSON representation of NSDictionary: %@", jsonString;
-    }
+        // The password to be shared with external system separately
+        NSString *password = kInterAppPW;
 
+        // Decrypt the measurements data
+        NSError *decryptError;
+        NSData *decryptedData = [RNDecryptor decryptData:rawData
+                                            withSettings:kRNCryptorAES256Settings
+                                                password:password
+                                                  error:&decryptError];
+
+        if (!decryptedData) {
+            NSLog(@"Error decrypting data: %@", decryptError.localizedDescription);
+            result = [NSString stringWithFormat:@"Error decrypting data: %@", decryptError.localizedDescription];
+        } else {
+            // Convert the NSData to NSDictionary
+            NSError *unarchiveError;
+            NSDictionary *dict = (NSDictionary *)[NSKeyedUnarchiver unarchivedObjectOfClass:[NSDictionary class] fromData:decryptedData error:&unarchiveError];
+
+            if (!dict) {
+                NSLog(@"Error unarchiving data: %@", unarchiveError.localizedDescription);
+                result = [NSString stringWithFormat:@"Error unarchiving data: %@", unarchiveError.localizedDescription];
+            } else {
+                // Convert the NSDictionary to JSON
+                NSError *jsonError;
+                NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
+                                                                  options:NSJSONWritingPrettyPrinted
+                                                                    error:&jsonError];
+
+                if (!jsonData) {
+                    NSLog(@"Error converting NSDictionary to JSON: %@", jsonError.localizedDescription);
+                    result = [NSString stringWithFormat:@"Error converting NSDictionary to JSON: %@", jsonError.localizedDescription];
+                } else {
+                    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+                    NSLog(@"JSON representation of NSDictionary: %@", jsonString);
+                    result = [NSString stringWithFormat:@"JSON representation of NSDictionary: %@", jsonString];
+                }
+            }
+        }
+    }
 
 
 
