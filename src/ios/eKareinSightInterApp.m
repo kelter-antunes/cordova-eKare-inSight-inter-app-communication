@@ -75,7 +75,7 @@
 
     if (!encryptedData) {
         NSLog(@"No encrypted data found on the pasteboard.");
-        error = @"No encrypted data found on the pasteboard.";
+        result = @"No encrypted data found on the pasteboard.";
     }
 
     // The password to be shared with an external system separately
@@ -107,7 +107,7 @@
         } @catch (NSException *exception) {
             NSString *dictString = measurementDict.description;
             NSLog(@"Error: %@", dictString);
-            error = @"Error: %@", dictString;
+            result = @"Error: %@", dictString;
         }
     }
 
