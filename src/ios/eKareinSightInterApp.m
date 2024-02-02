@@ -96,23 +96,24 @@ if (!encryptedData) {
         @try {
             measurementDict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
 
-            NSError *jsonError = nil;
-            @try {
-                // Use 'measurementDict' as needed
-                // For example, you can convert it to JSON representation if needed
-                NSData *fullData = [NSJSONSerialization dataWithJSONObject:measurementDict options:0 error:&jsonError];
-
-                if (jsonError) {
-                    NSLog(@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription);
-                    result = [NSString stringWithFormat:@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription];
-                } else {
-                    NSString *fullDataJSON = [[NSString alloc] initWithData:fullData encoding:NSUTF8StringEncoding];
-                    result = fullDataJSON;
+            // Filter out non-JSON-serializable values if needed
+            NSMutableDictionary *serializableDict = [NSMutableDictionary dictionary];
+            for (NSString *key in measurementDict) {
+                id value = measurementDict[key];
+                if ([NSJSONSerialization isValidJSONObject:value]) {
+                    serializableDict[key] = value;
                 }
+            }
 
-            } @catch (NSException *exception) {
-                NSLog(@"Error processing decrypted data: %@", exception.reason);
-                result = [NSString stringWithFormat:@"Error processing decrypted data: %@", exception.reason];
+            NSError *jsonError = nil;
+            NSData *fullData = [NSJSONSerialization dataWithJSONObject:serializableDict options:0 error:&jsonError];
+
+            if (jsonError) {
+                NSLog(@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription);
+                result = [NSString stringWithFormat:@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription];
+            } else {
+                NSString *fullDataJSON = [[NSString alloc] initWithData:fullData encoding:NSUTF8StringEncoding];
+                result = fullDataJSON;
             }
 
         } @catch (NSException *exception) {
@@ -121,6 +122,7 @@ if (!encryptedData) {
         }
     }
 }
+
 
 
 
