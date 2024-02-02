@@ -61,61 +61,53 @@
     // UIPasteboard *pasteBoard = [[UIPasteboard generalPasteboard] dataForPasteboardType:kInterAppPasteBoardName];
 
 
-    // Get the measurements data from the pasteboard
+       // Access the general pasteboard
     UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
 
-    // Get the measurements data from the pasteboard
-    NSData *rawData;
-    NSString *string = pasteBoard.string;
-    NSArray *strings = pasteBoard.strings;
+    // Retrieve the encrypted data from the pasteboard items
+    NSData *encryptedData;
     for (NSDictionary *item in [pasteBoard items]) {
         if ([item objectForKey:@"encrypted_data"]) {
-            rawData = [item objectForKey:@"encrypted_data"];
+            encryptedData = [item objectForKey:@"encrypted_data"];
+            break;
         }
     }
 
-    // Check for nil or empty rawData
-    if (!rawData || [rawData length] == 0) {
-        NSLog(@"Error: No valid data found in pasteboard");
-        result = @"Error: No valid data found in pasteboard";
-    } else {
-        // The password to be shared with external system separately
-        NSString *password = kInterAppPW;
+    if (!encryptedData) {
+        NSLog(@"No encrypted data found on the pasteboard.");
+        error = @"No encrypted data found on the pasteboard.";
+    }
 
-        // Decrypt the measurements data
-        NSError *decryptError;
-        NSData *decryptedData = [RNDecryptor decryptData:rawData
-                                            withSettings:kRNCryptorAES256Settings
-                                                password:password
-                                                  error:&decryptError];
+    // The password to be shared with an external system separately
+    NSString *password = kInterAppPW;
 
-        if (!decryptedData) {
-            NSLog(@"Error decrypting data: %@", decryptError.localizedDescription);
-            result = [NSString stringWithFormat:@"Error decrypting data: %@", decryptError.localizedDescription];
-        } else {
-            // Convert the NSData to NSDictionary
-            NSError *unarchiveError;
-            NSDictionary *dict = (NSDictionary *)[NSKeyedUnarchiver unarchivedObjectOfClass:[NSDictionary class] fromData:decryptedData error:&unarchiveError];
+    // Decrypt the measurements data
+    NSData *decryptedData = [RNDecryptor decryptData:encryptedData
+                                       withSettings:kRNCryptorAES256Settings
+                                           password:password
+                                              error:nil];
 
-            if (!dict) {
-                NSLog(@"Error unarchiving data: %@", unarchiveError.localizedDescription);
-                result = [NSString stringWithFormat:@"Error unarchiving data: %@", unarchiveError.localizedDescription];
-            } else {
-                // Convert the NSDictionary to JSON
-                NSError *jsonError;
-                NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
-                                                                  options:NSJSONWritingPrettyPrinted
-                                                                    error:&jsonError];
+    // Convert the decrypted NSData to a NSDictionary
+    NSDictionary *measurementDict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
 
-                if (!jsonData) {
-                    NSLog(@"Error converting NSDictionary to JSON: %@", jsonError.localizedDescription);
-                    result = [NSString stringWithFormat:@"Error converting NSDictionary to JSON: %@", jsonError.localizedDescription];
-                } else {
-                    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-                    NSLog(@"JSON representation of NSDictionary: %@", jsonString);
-                    result = [NSString stringWithFormat:@"JSON representation of NSDictionary: %@", jsonString];
-                }
-            }
+    // Log the decrypted dictionary
+    NSLog(@"Decrypted Dictionary: %@", measurementDict);
+
+    // Update UI based on the parsed data
+    if (measurementDict) {
+        NSString *measurementJSON = measurementDict[@"measurement"][@"measurements"];
+        result = measurementJSON;
+
+        NSData *measurementData = [measurementJSON dataUsingEncoding:NSUTF8StringEncoding];
+
+        @try {
+            NSArray *measurements = [NSJSONSerialization JSONObjectWithData:measurementData options:0 error:nil];
+            NSDictionary *measurement = measurements[0];
+
+        } @catch (NSException *exception) {
+            NSString *dictString = measurementDict.description;
+            NSLog(@"Error: %@", dictString);
+            error = @"Error: %@", dictString;
         }
     }
 
