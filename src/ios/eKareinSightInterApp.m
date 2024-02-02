@@ -78,7 +78,7 @@
 
 
 
-
+/*
 
   // Get the measurements data from the pasteboard
     NSData *rawData;
@@ -107,10 +107,10 @@
   result = @"dict = %@", dict;
 
 
+*/
 
 
 
-/*
 
     // Concatenate all keys and values from the pasteboard into a single string
     NSMutableString *resultString = [NSMutableString string];
@@ -137,7 +137,7 @@
     NSLog(@"%@", resultString);
     result = resultString;
 
-*/
+
 
 
     // interapp scheme to be shared with external system separately
