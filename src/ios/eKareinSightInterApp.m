@@ -80,6 +80,35 @@
 
 
 
+  // Get the measurements data from the pasteboard
+    NSData *rawData;
+    NSString *string = pasteBoard.string;
+    NSArray *strings = pasteBoard.strings;
+    for (NSDictionary *item in [pasteBoard items]) {
+        if ([item objectForKey:@"encrypted_data"]) {
+            rawData = [item objectForKey:@"encrypted_data"];
+        }
+    }
+    
+
+  
+  // The password to be shared with external system separately
+  NSString *password = kInterAppPW;
+  
+  // Decrypt the measurements data
+  NSData *data = [RNDecryptor decryptData:rawData
+                             withSettings:kRNCryptorAES256Settings
+                                 password:password
+                                    error:nil];
+  
+  // Convert the NSData to NSDictionary
+  NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
+
+  result = @"dict = %@", dict;
+
+
+
+
 
 /*
 
