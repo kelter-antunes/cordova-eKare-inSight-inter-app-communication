@@ -96,7 +96,7 @@ if (!encryptedData) {
         @try {
             measurementDict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
 
-            // Filter out non-JSOn-serializable values if needed
+            // Filter out non-JSON-serializable values if needed
             NSMutableDictionary *serializableDict = [NSMutableDictionary dictionary];
             for (NSString *key in measurementDict) {
                 id value = measurementDict[key];
@@ -109,21 +109,53 @@ if (!encryptedData) {
             if ([measurementDict objectForKey:@"files"] && [[measurementDict objectForKey:@"files"] isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *filesDict = [measurementDict objectForKey:@"files"];
 
-                NSMutableDictionary *base64Files = [NSMutableDictionary dictionary];
+                // Declare variables for each image type
+                NSData *depthData = nil;
+                NSData *webPImageData = nil;
+                NSData *mergedImageData = nil;
+                NSData *outlineImageData = nil;
+                NSData *classificationImageData = nil;
 
-                // Iterate through filesDict to convert images to base64
+                // Declare variables to store base64 strings
+                NSString *depthBase64 = nil;
+                NSString *webPImageBase64 = nil;
+                NSString *mergedImageBase64 = nil;
+                NSString *outlineImageBase64 = nil;
+                NSString *classificationImageBase64 = nil;
+
+                // Iterate through filesDict to assign values to variables
                 for (NSString *fileName in filesDict.allKeys) {
                     NSData *fileData = [filesDict objectForKey:fileName];
 
-                    if ([fileName.pathExtension isEqualToString:@"png"] || [fileName.pathExtension isEqualToString:@"jpg"] || [fileName.pathExtension isEqualToString:@"jpeg"]) {
-                        // Convert image data to base64 string
-                        NSString *base64String = [fileData base64EncodedStringWithOptions:0];
-                        base64Files[fileName] = base64String;
+                    if ([fileName.pathExtension isEqualToString:@"zip"]) {
+                        depthData = fileData;
+                        depthBase64 = [depthData base64EncodedStringWithOptions:0];
+                    } else if ([fileName.pathExtension isEqualToString:@"webp"]) {
+                        webPImageData = fileData;
+                        webPImageBase64 = [webPImageData base64EncodedStringWithOptions:0];
+                    } else if ([fileName hasSuffix:@"_merged.png"]) {
+                        mergedImageData = fileData;
+                        mergedImageBase64 = [mergedImageData base64EncodedStringWithOptions:0];
+                    } else if ([fileName hasSuffix:@"_outline.png"]) {
+                        outlineImageData = fileData;
+                        outlineImageBase64 = [outlineImageData base64EncodedStringWithOptions:0];
+                    } else {
+                        classificationImageData = fileData;
+                        classificationImageBase64 = [classificationImageData base64EncodedStringWithOptions:0];
                     }
                 }
 
-                // Add the base64 image information to the result
-                result = @{@"measurement": serializableDict, @"files": base64Files};
+                // Add the base64 strings to the "files" dictionary within the "measurement" element
+                [measurementDict setObject:@{
+                                       @"depthData": depthBase64 ?: [NSNull null],
+                                       @"webPImageData": webPImageBase64 ?: [NSNull null],
+                                       @"mergedImageData": mergedImageBase64 ?: [NSNull null],
+                                       @"outlineImageData": outlineImageBase64 ?: [NSNull null],
+                                       @"classificationImageData": classificationImageBase64 ?: [NSNull null]
+                               } forKey:@"files"];
+
+                // Add the updated "measurement" element to the result
+                result = @{@"measurement": measurementDict};
             } else {
                 // No "files" key found in measurementDict
                 NSLog(@"No 'files' key found in measurementDict.");
@@ -135,6 +167,7 @@ if (!encryptedData) {
         }
     }
 }
+
 
 
 
