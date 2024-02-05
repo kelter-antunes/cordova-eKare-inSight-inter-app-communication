@@ -105,13 +105,10 @@ if (!encryptedData) {
                     NSMutableArray *base64Images = [NSMutableArray array];
                     for (NSString *imagePath in value) {
                         if ([imagePath isKindOfClass:[NSString class]]) {
-                            UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
-                            if (image) {
-                                NSData *imageData = UIImagePNGRepresentation(image);
-                                if (imageData) {
-                                    NSString *base64String = [imageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-                                    [base64Images addObject:base64String];
-                                }
+                            NSData *imageData = [NSData dataWithContentsOfFile:imagePath];
+                            if (imageData) {
+                                NSString *base64String = [imageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+                                [base64Images addObject:base64String];
                             }
                         }
                     }
