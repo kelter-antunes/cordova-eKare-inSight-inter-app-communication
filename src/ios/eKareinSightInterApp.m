@@ -91,10 +91,10 @@ if (!encryptedData) {
         NSLog(@"Error decrypting data: %@", decryptError.localizedDescription);
         result = [NSString stringWithFormat:@"Error decrypting data: %@", decryptError.localizedDescription];
     } else {
-        // Convert the decrypted NSData to a NSDictionary
-        NSDictionary *measurementDict = nil;
+        // Convert the decrypted NSData to a NSMutableDictionary
+        NSMutableDictionary *measurementDict = nil;
         @try {
-            measurementDict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+            measurementDict = (NSMutableDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
 
             // Filter out non-JSON-serializable values if needed
             NSMutableDictionary *serializableDict = [NSMutableDictionary dictionary];
@@ -147,11 +147,11 @@ if (!encryptedData) {
 
                 // Add the base64 strings to the "files" dictionary within the "measurement" element
                 [measurementDict setObject:@{
-                                       @"depthData": depthBase64 ?: [NSNull null],
-                                       @"webPImageData": webPImageBase64 ?: [NSNull null],
-                                       @"mergedImageData": mergedImageBase64 ?: [NSNull null],
-                                       @"outlineImageData": outlineImageBase64 ?: [NSNull null],
-                                       @"classificationImageData": classificationImageBase64 ?: [NSNull null]
+                                   @"depthData": depthBase64 ?: [NSNull null],
+                                   @"webPImageData": webPImageBase64 ?: [NSNull null],
+                                   @"mergedImageData": mergedImageBase64 ?: [NSNull null],
+                                   @"outlineImageData": outlineImageBase64 ?: [NSNull null],
+                                   @"classificationImageData": classificationImageBase64 ?: [NSNull null]
                                } forKey:@"files"];
 
                 // Add the updated "measurement" element to the result
@@ -167,6 +167,7 @@ if (!encryptedData) {
         }
     }
 }
+
 
 
 
