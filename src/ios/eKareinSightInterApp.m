@@ -96,7 +96,7 @@ if (!encryptedData) {
         @try {
             measurementDict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
 
-            // Filter out non-JSON-serializable values if needed
+            // Filter out non-JSOn-serializable values if needed
             NSMutableDictionary *serializableDict = [NSMutableDictionary dictionary];
             for (NSString *key in measurementDict) {
                 id value = measurementDict[key];
@@ -105,24 +105,37 @@ if (!encryptedData) {
                 }
             }
 
+            // Check if "files" key is present in measurementDict
+            if ([measurementDict objectForKey:@"files"] && [[measurementDict objectForKey:@"files"] isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *filesDict = [measurementDict objectForKey:@"files"];
 
-            NSError *jsonError = nil;
-            NSData *fullData = [NSJSONSerialization dataWithJSONObject:serializableDict options:0 error:&jsonError];
+                NSMutableDictionary *base64Files = [NSMutableDictionary dictionary];
 
-            if (jsonError) {
-                NSLog(@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription);
-                result = [NSString stringWithFormat:@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription];
+                // Iterate through filesDict to convert images to base64
+                for (NSString *fileName in filesDict.allKeys) {
+                    NSData *fileData = [filesDict objectForKey:fileName];
+
+                    if ([fileName.pathExtension isEqualToString:@"png"] || [fileName.pathExtension isEqualToString:@"jpg"] || [fileName.pathExtension isEqualToString:@"jpeg"]) {
+                        // Convert image data to base64 string
+                        NSString *base64String = [fileData base64EncodedStringWithOptions:0];
+                        base64Files[fileName] = base64String;
+                    }
+                }
+
+                // Add the base64 image information to the result
+                result = @{@"measurement": serializableDict, @"files": base64Files};
             } else {
-                NSString *fullDataJSON = [[NSString alloc] initWithData:fullData encoding:NSUTF8StringEncoding];
-                result = fullDataJSON;
+                // No "files" key found in measurementDict
+                NSLog(@"No 'files' key found in measurementDict.");
+                result = @{@"measurement": serializableDict, @"files": @"No 'files' key found in measurementDict."};
             }
-
         } @catch (NSException *exception) {
             NSLog(@"Error unarchiving decrypted data: %@", exception.reason);
             result = [NSString stringWithFormat:@"Error unarchiving decrypted data: %@", exception.reason];
         }
     }
 }
+
 
 
 
