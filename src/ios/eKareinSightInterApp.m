@@ -100,7 +100,23 @@ if (!encryptedData) {
             NSMutableDictionary *serializableDict = [NSMutableDictionary dictionary];
             for (NSString *key in measurementDict) {
                 id value = measurementDict[key];
-                if ([NSJSONSerialization isValidJSONObject:value]) {
+
+                if ([key isEqualToString:@"wound_images"] && [value isKindOfClass:[NSArray class]]) {
+                    NSMutableArray *base64Images = [NSMutableArray array];
+                    for (NSString *imagePath in value) {
+                        if ([imagePath isKindOfClass:[NSString class]]) {
+                            UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
+                            if (image) {
+                                NSData *imageData = UIImagePNGRepresentation(image);
+                                if (imageData) {
+                                    NSString *base64String = [imageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+                                    [base64Images addObject:base64String];
+                                }
+                            }
+                        }
+                    }
+                    serializableDict[key] = base64Images;
+                } else if ([NSJSONSerialization isValidJSONObject:value]) {
                     serializableDict[key] = value;
                 }
             }
@@ -122,6 +138,7 @@ if (!encryptedData) {
         }
     }
 }
+
 
 
 
