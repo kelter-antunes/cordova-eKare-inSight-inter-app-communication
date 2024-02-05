@@ -96,38 +96,23 @@ if (!encryptedData) {
         @try {
             measurementDict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
 
-            // Filter out non-JSON-serializable values if needed
-            NSMutableDictionary *serializableDict = [NSMutableDictionary dictionary];
-            for (NSString *key in measurementDict) {
-                id value = measurementDict[key];
-
-                if ([key isEqualToString:@"wound_images"] && [value isKindOfClass:[NSArray class]]) {
-                    NSMutableArray *base64Images = [NSMutableArray array];
-                    for (NSString *imagePath in value) {
-                        if ([imagePath isKindOfClass:[NSString class]]) {
-                            NSData *imageData = [NSData dataWithContentsOfFile:imagePath];
-                            if (imageData) {
-                                NSString *base64String = [UIImageJPEGRepresentation(imageData, 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-                                [base64Images addObject:base64String];
-
-                            }
-                        }
-                    }
-                    serializableDict[key] = base64Images;
-                } else if ([NSJSONSerialization isValidJSONObject:value]) {
-                    serializableDict[key] = value;
-                }
-            }
-
             NSError *jsonError = nil;
-            NSData *fullData = [NSJSONSerialization dataWithJSONObject:serializableDict options:0 error:&jsonError];
+            @try {
+                // Use 'measurementDict' as needed
+                // For example, you can convert it to JSON representation if needed
+                NSData *fullData = [NSJSONSerialization dataWithJSONObject:measurementDict options:0 error:&jsonError];
 
-            if (jsonError) {
-                NSLog(@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription);
-                result = [NSString stringWithFormat:@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription];
-            } else {
-                NSString *fullDataJSON = [[NSString alloc] initWithData:fullData encoding:NSUTF8StringEncoding];
-                result = fullDataJSON;
+                if (jsonError) {
+                    NSLog(@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription);
+                    result = [NSString stringWithFormat:@"Error converting measurementDict to JSON: %@", jsonError.localizedDescription];
+                } else {
+                    NSString *fullDataJSON = [[NSString alloc] initWithData:fullData encoding:NSUTF8StringEncoding];
+                    result = fullDataJSON;
+                }
+
+            } @catch (NSException *exception) {
+                NSLog(@"Error processing decrypted data: %@", exception.reason);
+                result = [NSString stringWithFormat:@"Error processing decrypted data: %@", exception.reason];
             }
 
         } @catch (NSException *exception) {
@@ -136,8 +121,6 @@ if (!encryptedData) {
         }
     }
 }
-
-
 
 
 
