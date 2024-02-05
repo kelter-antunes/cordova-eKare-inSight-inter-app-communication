@@ -107,8 +107,9 @@ if (!encryptedData) {
                         if ([imagePath isKindOfClass:[NSString class]]) {
                             NSData *imageData = [NSData dataWithContentsOfFile:imagePath];
                             if (imageData) {
-                                NSString *base64String = [imageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+                                NSString *base64String = [UIImageJPEGRepresentation(imageData, 0.8) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
                                 [base64Images addObject:base64String];
+
                             }
                         }
                     }
