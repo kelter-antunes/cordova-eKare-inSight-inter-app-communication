@@ -30,7 +30,7 @@
                 // Prepare the URL string
                 NSString *urlString = [NSString stringWithFormat:@"%@://%@?%@", measurementScheme, applicationId, params];
 
-                // Prepare the NSURL that will open the inSight app
+                // Attempt to create NSURL from the URL string
                 NSURL *url = [NSURL URLWithString:urlString];
 
                 if (url) {
@@ -57,6 +57,7 @@
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
+
 
 - (void)readMeasurements:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
