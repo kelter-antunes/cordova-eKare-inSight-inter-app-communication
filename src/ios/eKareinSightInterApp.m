@@ -11,35 +11,50 @@
   [self.commandDelegate runInBackground:^{
     NSString *result = nil;
 
-    NSString *kInterAppId = [command.arguments objectAtIndex:0];
-    NSString *kInterAppPW = [command.arguments objectAtIndex:1];
-    NSString *kInterAppMeasurementScheme = [command.arguments objectAtIndex:2];
-    NSString *kInterAppCallbackScheme = [command.arguments objectAtIndex:3];
-    NSString *kInterAppPasteBoardName = [command.arguments objectAtIndex:4];
+    @try {
+      // Retrieve arguments from the command
+      NSString *kInterAppId = [command.arguments objectAtIndex:0];
+      NSString *kInterAppPW = [command.arguments objectAtIndex:1];
+      NSString *kInterAppMeasurementScheme =
+          [command.arguments objectAtIndex:2];
+      NSString *kInterAppCallbackScheme = [command.arguments objectAtIndex:3];
+      NSString *kInterAppPasteBoardName = [command.arguments objectAtIndex:4];
 
-    // Prepare the parameters to be passed in the URL
-    NSString *params = [NSString
-        stringWithFormat:
-            @"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",
-            kInterAppId, kInterAppPasteBoardName, kInterAppCallbackScheme];
+      // Prepare the parameters to be passed in the URL
+      NSString *params = [NSString
+          stringWithFormat:
+              @"source=%@&pasteboard_name=%@&wound_id=-1&callback_scheme=%@",
+              kInterAppId, kInterAppPasteBoardName, kInterAppCallbackScheme];
 
-    // Prepare the URL string:
-    NSString *urlString =
-        [NSString stringWithFormat:@"%@://%@?%@", kInterAppMeasurementScheme,
-                                   kInterAppId, params];
+      // Prepare the URL string
+      NSString *urlString =
+          [NSString stringWithFormat:@"%@://%@?%@", kInterAppMeasurementScheme,
+                                     kInterAppId, params];
 
-    // Prepare the NSURL that will open inSight app
-    NSURL *url = [NSURL URLWithString:urlString];
+      // Prepare the NSURL that will open the inSight app
+      NSURL *url = [NSURL URLWithString:urlString];
 
-    NSString *nsURLString = url.absoluteString;
-    result = nsURLString;
+      if (url) {
+        // Open the inSight app
+        [[UIApplication sharedApplication] openURL:url
+            options:@{}
+            completionHandler:^(BOOL success) {
+              NSLog(@"Open URL Success: %d", success);
+            }];
 
-    [[UIApplication sharedApplication] openURL:url
-        options:@{}
-        completionHandler:^(BOOL success) {
-          NSLog(@"success : %d", success);
-        }];
+        result = url.absoluteString;
+      } else {
+        // Failed to create URL
+        NSLog(@"Failed to create URL");
+        result = @"Failed to create URL";
+      }
+    } @catch (NSException *exception) {
+      // Error occurred
+      NSLog(@"Error: %@", exception.reason);
+      result = [NSString stringWithFormat:@"Error: %@", exception.reason];
+    }
 
+    // Send plugin result back to JavaScript
     CDVPluginResult *pluginResult =
         [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                           messageAsString:result];
