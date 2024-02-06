@@ -5,5 +5,6 @@
 
 - (void)open:(CDVInvokedUrlCommand *)command;
 - (void)readMeasurements:(CDVInvokedUrlCommand*)command;
+- (void)clearPasteboard:(CDVInvokedUrlCommand*)command;
 
 @end

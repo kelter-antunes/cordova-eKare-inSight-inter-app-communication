@@ -69,6 +69,17 @@ eKareinSightInterApp.prototype.readMeasurements = function (kInterAppPW, kInterA
 };
 
 
+/**
+ * Clears the measurments data from the clipboard
+ *
+ * @param {Function} onSuccess The function to call in case of success
+ * @param {Function} onFail    The function to call in case of error
+ */
+eKareinSightInterApp.prototype.clearPasteboard = function ( onSuccess, onFail) {
+	cordova.exec(onSuccess, onFail, PLUGIN_NAME, "clearPasteboard");
+};
+
+
 // Register the plugin
 var eKareinSightInterApp = new eKareinSightInterApp();
 module.exports = eKareinSightInterApp;
