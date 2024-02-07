@@ -165,7 +165,7 @@
                             // Add the base64 strings to the "files" dictionary within the
                             // "measurement" element
                             [measurementDict setObject:@{
-                                @"depthData" : depthBase64 ?: [NSNull null],
+                                //@"depthData" : depthBase64 ?: [NSNull null],
                                 @"webPImageData" : webPImageBase64 ?: [NSNull null],
                                 @"mergedImageData" : mergedImageBase64 ?: [NSNull null],
                                 @"outlineImageData" : outlineImageBase64 ?: [NSNull null],
