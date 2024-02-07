@@ -10,12 +10,14 @@
 - (void)open:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         NSString *result = nil;
+        CDVCommandStatus status = CDVCommandStatus_OK;
 
         @try {
             // Check if all required arguments are present
             if (command.arguments.count < 5) {
                 // Handle missing arguments
                 result = @"Missing arguments";
+                status = CDVCommandStatus_ERROR;
             } else {
                 // Retrieve arguments from the command
                 NSString *applicationId = [command.arguments objectAtIndex:0];
@@ -44,24 +46,28 @@
                     // Failed to create URL
                     NSLog(@"Failed to create URL");
                     result = @"Failed to create URL";
+                    status = CDVCommandStatus_ERROR;
                 }
             }
         } @catch (NSException *exception) {
             // Error occurred
             NSLog(@"Error: %@", exception.reason);
             result = [NSString stringWithFormat:@"Error: %@", exception.reason];
+            status = CDVCommandStatus_ERROR;
         }
 
         // Send plugin result back to JavaScript
-        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:status messageAsString:result];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
 
 
+
 - (void)readMeasurements:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         NSString *result = nil;
+        CDVCommandStatus status = CDVCommandStatus_OK;
 
         @try {
             NSString *kInterAppPW = [command.arguments objectAtIndex:0];
@@ -84,6 +90,7 @@
             if (!encryptedData) {
                 NSLog(@"No valid encrypted data found on the pasteboard.");
                 result = @"No valid encrypted data found on the pasteboard.";
+                status = CDVCommandStatus_ERROR;
             } else {
                 // The password to be shared with an external system separately
                 NSString *password = kInterAppPW;
@@ -99,6 +106,7 @@
                     NSLog(@"Error decrypting data: %@", decryptError.localizedDescription);
                     result = [NSString stringWithFormat:@"Error decrypting data: %@",
                                                         decryptError.localizedDescription];
+                    status = CDVCommandStatus_ERROR;
                 } else {
                     // Convert the decrypted NSData to a NSMutableDictionary
                     NSMutableDictionary *measurementDict = nil;
@@ -164,8 +172,8 @@
 
                             // Add the base64 strings to the "files" dictionary within the
                             // "measurement" element
+                            // excluded depth information: @"depthData" : depthBase64 ?: [NSNull null],
                             [measurementDict setObject:@{
-                                //@"depthData" : depthBase64 ?: [NSNull null],
                                 @"webPImageData" : webPImageBase64 ?: [NSNull null],
                                 @"mergedImageData" : mergedImageBase64 ?: [NSNull null],
                                 @"outlineImageData" : outlineImageBase64 ?: [NSNull null],
@@ -189,6 +197,7 @@
                         result = [NSString
                             stringWithFormat:@"Error unarchiving decrypted data: %@",
                                             exception.reason];
+                        status = CDVCommandStatus_ERROR;
                     }
                 }
             }
@@ -197,17 +206,20 @@
             // Error occurred
             NSLog(@"Error: %@", exception.reason);
             result = [NSString stringWithFormat:@"Error: %@", exception.reason];
+            status = CDVCommandStatus_ERROR;
         }
 
         // Send plugin result back to JavaScript
-        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:status messageAsString:result];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
 
+
 - (void)clearPasteboard:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         NSString *result = nil;
+        CDVCommandStatus status = CDVCommandStatus_OK;
 
         @try {
             // Clean the systemwide general pasteboard
@@ -218,12 +230,14 @@
             // Error occurred
             NSLog(@"Error: %@", exception.reason);
             result = [NSString stringWithFormat:@"Error: %@", exception.reason];
+            status = CDVCommandStatus_ERROR;
         }
 
         // Send plugin result back to JavaScript
-        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:status messageAsString:result];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
+
 
 @end
