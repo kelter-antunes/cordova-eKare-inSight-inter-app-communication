@@ -76,30 +76,48 @@
             // Access the general pasteboard
             UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
 
-            // Retrieve the encrypted data from the pasteboard items
+            // Function to read encrypted data from pasteboard
+            NSData *(^readEncryptedDataFromPasteboard)(void) = ^{
+                for (NSDictionary *item in [pasteBoard items]) {
+                    if ([item objectForKey:@"encrypted_data"] &&
+                        [[item objectForKey:@"encrypted_data"]
+                            isKindOfClass:[NSData class]]) {
+                        return [item objectForKey:@"encrypted_data"];
+                    }
+                }
+                return nil;
+            };
+
+            // Maximum number of retries
+            int maxRetries = 3;
+            // Time to wait between retries in seconds
+            int retryIntervalInSeconds = 2;
+
+            // Retry mechanism
             NSData *encryptedData = nil;
-            for (NSDictionary *item in [pasteBoard items]) {
-                if ([item objectForKey:@"encrypted_data"] &&
-                    [[item objectForKey:@"encrypted_data"]
-                        isKindOfClass:[NSData class]]) {
-                    encryptedData = [item objectForKey:@"encrypted_data"];
+            int retryCount = 0;
+            while (retryCount < maxRetries) {
+                encryptedData = readEncryptedDataFromPasteboard();
+                if (encryptedData) {
+                    // Data found, break out of the loop
                     break;
+                } else {
+                    // Wait for retryIntervalInSeconds before next attempt
+                    [NSThread sleepForTimeInterval:retryIntervalInSeconds];
+                    retryCount++;
                 }
             }
 
             if (!encryptedData) {
-                NSLog(@"No valid encrypted data found on the pasteboard.");
-                result = @"No valid encrypted data found on the pasteboard.";
+                NSLog(@"No valid encrypted data found on the pasteboard after %d retries.", maxRetries);
+                result = [NSString stringWithFormat:@"No valid encrypted data found on the pasteboard after %d retries.", maxRetries];
                 status = CDVCommandStatus_ERROR;
             } else {
-                // The password to be shared with an external system separately
-                NSString *password = kInterAppPW;
-
                 // Decrypt the measurements data
                 NSError *decryptError = nil;
                 NSData *decryptedData = [RNDecryptor decryptData:encryptedData
                                                     withSettings:kRNCryptorAES256Settings
-                                                        password:password
+                                                        password:kInterAppPW
                                                            error:&decryptError];
 
                 if (decryptError) {
@@ -199,9 +217,9 @@
                                             exception.reason];
                         status = CDVCommandStatus_ERROR;
                     }
+
                 }
             }
-
         } @catch (NSException *exception) {
             // Error occurred
             NSLog(@"Error: %@", exception.reason);
@@ -214,6 +232,7 @@
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
+
 
 
 - (void)clearPasteboard:(CDVInvokedUrlCommand *)command {
