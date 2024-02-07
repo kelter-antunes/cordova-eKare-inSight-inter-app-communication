@@ -77,11 +77,10 @@
             UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
 
             // Function to read encrypted data from pasteboard
-            NSData *(^readEncryptedDataFromPasteboard)(void) = ^{
+            NSData *(^readEncryptedDataFromPasteboard)(void) = ^NSData *{
                 for (NSDictionary *item in [pasteBoard items]) {
                     if ([item objectForKey:@"encrypted_data"] &&
-                        [[item objectForKey:@"encrypted_data"]
-                            isKindOfClass:[NSData class]]) {
+                        [[item objectForKey:@"encrypted_data"] isKindOfClass:[NSData class]]) {
                         return [item objectForKey:@"encrypted_data"];
                     }
                 }
@@ -128,13 +127,17 @@
                 } else {
                     // Convert the decrypted NSData to a NSMutableDictionary
                     NSMutableDictionary *measurementDict = nil;
-                    @try {
-                        measurementDict = (NSMutableDictionary *)[NSKeyedUnarchiver
-                            unarchiveObjectWithData:decryptedData];
+                    NSError *archiveError = nil;
+                    measurementDict = (NSMutableDictionary *)[NSKeyedUnarchiver unarchivedObjectOfClass:[NSDictionary class] fromData:decryptedData error:&archiveError];
 
+                    if (archiveError) {
+                        NSLog(@"Error unarchiving decrypted data: %@", archiveError.localizedDescription);
+                        result = [NSString stringWithFormat:@"Error unarchiving decrypted data: %@",
+                                                        archiveError.localizedDescription];
+                        status = CDVCommandStatus_ERROR;
+                    } else {
                         // Filter out non-JSON-serializable values if needed
-                        NSMutableDictionary *serializableDict =
-                            [NSMutableDictionary dictionary];
+                        NSMutableDictionary *serializableDict = [NSMutableDictionary dictionary];
                         for (NSString *key in measurementDict) {
                             id value = measurementDict[key];
                             if ([NSJSONSerialization isValidJSONObject:value]) {
@@ -144,8 +147,7 @@
 
                         // Check if "files" key is present in measurementDict
                         if ([measurementDict objectForKey:@"files"] &&
-                            [[measurementDict objectForKey:@"files"]
-                                isKindOfClass:[NSDictionary class]]) {
+                            [[measurementDict objectForKey:@"files"] isKindOfClass:[NSDictionary class]]) {
                             NSDictionary *filesDict = [measurementDict objectForKey:@"files"];
 
                             // Declare variables for each image type
@@ -171,32 +173,25 @@
                                     depthBase64 = [depthData base64EncodedStringWithOptions:0];
                                 } else if ([fileName.pathExtension isEqualToString:@"webp"]) {
                                     webPImageData = fileData;
-                                    webPImageBase64 =
-                                        [webPImageData base64EncodedStringWithOptions:0];
+                                    webPImageBase64 = [webPImageData base64EncodedStringWithOptions:0];
                                 } else if ([fileName hasSuffix:@"_merged.png"]) {
                                     mergedImageData = fileData;
-                                    mergedImageBase64 =
-                                        [mergedImageData base64EncodedStringWithOptions:0];
+                                    mergedImageBase64 = [mergedImageData base64EncodedStringWithOptions:0];
                                 } else if ([fileName hasSuffix:@"_outline.png"]) {
                                     outlineImageData = fileData;
-                                    outlineImageBase64 =
-                                        [outlineImageData base64EncodedStringWithOptions:0];
+                                    outlineImageBase64 = [outlineImageData base64EncodedStringWithOptions:0];
                                 } else {
                                     classificationImageData = fileData;
-                                    classificationImageBase64 =
-                                        [classificationImageData base64EncodedStringWithOptions:0];
+                                    classificationImageBase64 = [classificationImageData base64EncodedStringWithOptions:0];
                                 }
                             }
 
-                            // Add the base64 strings to the "files" dictionary within the
-                            // "measurement" element
-                            // excluded depth information: @"depthData" : depthBase64 ?: [NSNull null],
+                            // Add the base64 strings to the "files" dictionary within the "measurement" element
                             [measurementDict setObject:@{
                                 @"webPImageData" : webPImageBase64 ?: [NSNull null],
                                 @"mergedImageData" : mergedImageBase64 ?: [NSNull null],
                                 @"outlineImageData" : outlineImageBase64 ?: [NSNull null],
-                                @"classificationImageData" : classificationImageBase64
-                                    ?: [NSNull null]
+                                @"classificationImageData" : classificationImageBase64 ?: [NSNull null]
                             }
                                                 forKey:@"files"];
 
@@ -210,14 +205,7 @@
                                 @"files" : @"No 'files' key found in measurementDict."
                             };
                         }
-                    } @catch (NSException *exception) {
-                        NSLog(@"Error unarchiving decrypted data: %@", exception.reason);
-                        result = [NSString
-                            stringWithFormat:@"Error unarchiving decrypted data: %@",
-                                            exception.reason];
-                        status = CDVCommandStatus_ERROR;
                     }
-
                 }
             }
         } @catch (NSException *exception) {
@@ -232,6 +220,7 @@
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
+
 
 
 
